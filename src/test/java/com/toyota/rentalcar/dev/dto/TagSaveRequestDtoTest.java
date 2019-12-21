@@ -2,6 +2,7 @@ package com.toyota.rentalcar.dev.dto;
 
 import com.toyota.rentalcar.dev.domain.Tag;
 import com.toyota.rentalcar.dev.repositories.TagRepository;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,6 +22,7 @@ class TagSaveRequestDtoTest {
     @Autowired
     private TagRepository tagRepo;
 
+    @Test
     public void 태그저장_불러오기(){
 
         TagSaveRequestDto dto = new TagSaveRequestDto();

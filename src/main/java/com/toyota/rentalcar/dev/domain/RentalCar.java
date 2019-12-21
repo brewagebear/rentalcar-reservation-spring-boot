@@ -7,16 +7,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Table(name = "tbl_rentalcar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RentalCar {
+public class RentalCar implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "rentalcar_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -24,6 +28,9 @@ public class RentalCar {
     private String  carModelName;
     private String  carImgSource;
     private BigDecimal costPerNight;
+
+    @OneToMany(mappedBy = "rentalCar", cascade = CascadeType.ALL)
+    private List<RentalCarTag> rentalCarTags = new ArrayList<>();
 
     @Builder
     public RentalCar(CarType carType, String carModelName, String carImgSource, BigDecimal costPerNight) {
