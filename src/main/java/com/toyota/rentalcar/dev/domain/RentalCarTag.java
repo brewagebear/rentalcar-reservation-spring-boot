@@ -26,5 +26,4 @@ public class RentalCarTag {
         this.rentalCar = car;
         this.tag       = tag;
     }
-
 }

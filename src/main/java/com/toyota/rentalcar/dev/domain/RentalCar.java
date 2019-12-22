@@ -24,7 +24,7 @@ public class RentalCar implements Serializable {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private CarType carType;
+    private RentalCarType rentalCarType;
     private String  carModelName;
     private String  carImgSource;
     private BigDecimal costPerNight;
@@ -33,8 +33,8 @@ public class RentalCar implements Serializable {
     private List<RentalCarTag> rentalCarTags = new ArrayList<>();
 
     @Builder
-    public RentalCar(CarType carType, String carModelName, String carImgSource, BigDecimal costPerNight) {
-        this.carType      = carType;
+    public RentalCar(RentalCarType rentalCarType, String carModelName, String carImgSource, BigDecimal costPerNight) {
+        this.rentalCarType = rentalCarType;
         this.carModelName = carModelName;
         this.carImgSource = carImgSource;
         this.costPerNight = costPerNight;

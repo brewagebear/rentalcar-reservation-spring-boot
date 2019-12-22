@@ -1,6 +1,6 @@
 package com.toyota.rentalcar.dev.dto;
 
-import com.toyota.rentalcar.dev.domain.CarType;
+import com.toyota.rentalcar.dev.domain.RentalCarType;
 import com.toyota.rentalcar.dev.domain.RentalCar;
 import com.toyota.rentalcar.dev.repositories.RentalCarRepository;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class RentalCarSaveRequestDtoTest {
     public void 렌터카_저장(){
         BigDecimal cost = new BigDecimal(30L);
         RentalCarSaveRequestDto dto = new RentalCarSaveRequestDto();
-        dto.setCarType(CarType.GAUM);
+        dto.setRentalCarType(RentalCarType.GAUM);
         dto.setCarModelName("도요타 테스트");
         dto.setCarImgSource("이미지 테스트");
         dto.setCostPerNight(cost);

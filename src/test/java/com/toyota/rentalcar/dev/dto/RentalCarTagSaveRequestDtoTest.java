@@ -35,7 +35,7 @@ class RentalCarTagSaveRequestDtoTest {
     public void 다대다관계저장_불러오기(){
         BigDecimal cost = new BigDecimal(30L);
         RentalCarSaveRequestDto dto = new RentalCarSaveRequestDto();
-        dto.setCarType(CarType.GAUM);
+        dto.setRentalCarType(RentalCarType.GAUM);
         dto.setCarModelName("도요타 테스트");
         dto.setCarImgSource("이미지 테스트");
         dto.setCostPerNight(cost);
@@ -64,7 +64,4 @@ class RentalCarTagSaveRequestDtoTest {
                 .orElse(null);
         assertThat(rct).isNotNull();
     }
-
-
-
 }

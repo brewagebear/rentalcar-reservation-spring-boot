@@ -1,6 +1,6 @@
 package com.toyota.rentalcar.dev.dto;
 
-import com.toyota.rentalcar.dev.domain.CarType;
+import com.toyota.rentalcar.dev.domain.RentalCarType;
 import com.toyota.rentalcar.dev.domain.RentalCar;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,14 +13,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class RentalCarSaveRequestDto {
 
-    private CarType carType;
+    private RentalCarType rentalCarType;
     private String  carModelName;
     private String  carImgSource;
     private BigDecimal costPerNight;
 
     public RentalCar toEntity(){
         return RentalCar.builder()
-                .carType(carType)
+                .rentalCarType(rentalCarType)
                 .carModelName(carModelName)
                 .carImgSource(carImgSource)
                 .costPerNight(costPerNight)
