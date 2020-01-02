@@ -1,14 +1,12 @@
 package com.toyota.rentalcar.dev.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.List;
 @Getter
 @Table(name = "tbl_rentalcar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RentalCar implements Serializable {
+public class RentalCar extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
