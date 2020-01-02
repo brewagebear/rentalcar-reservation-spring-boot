@@ -2,6 +2,7 @@ package com.toyota.rentalcar.dev.dto;
 
 import com.toyota.rentalcar.dev.domain.RentalCarType;
 import com.toyota.rentalcar.dev.domain.RentalCar;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,17 @@ public class RentalCarSaveRequestDto {
     private String  carModelName;
     private String  carImgSource;
     private BigDecimal costPerNight;
+
+    @Builder
+    public RentalCarSaveRequestDto(RentalCarType carType,
+                                   String carModelName,
+                                   String carImgSource,
+                                   BigDecimal costPerNight){
+        this.rentalCarType = carType;
+        this.carModelName  = carModelName;
+        this.carImgSource  = carImgSource;
+        this.costPerNight  = costPerNight;
+    }
 
     public RentalCar toEntity(){
         return RentalCar.builder()

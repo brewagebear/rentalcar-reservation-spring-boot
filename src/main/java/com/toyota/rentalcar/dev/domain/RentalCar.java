@@ -1,6 +1,7 @@
 package com.toyota.rentalcar.dev.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +36,12 @@ public class RentalCar implements Serializable {
     @Builder
     public RentalCar(RentalCarType rentalCarType, String carModelName, String carImgSource, BigDecimal costPerNight) {
         this.rentalCarType = rentalCarType;
+        this.carModelName = carModelName;
+        this.carImgSource = carImgSource;
+        this.costPerNight = costPerNight;
+    }
+
+    public void update(String carModelName, String carImgSource, BigDecimal costPerNight){
         this.carModelName = carModelName;
         this.carImgSource = carImgSource;
         this.costPerNight = costPerNight;
