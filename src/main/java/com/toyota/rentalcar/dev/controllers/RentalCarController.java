@@ -13,18 +13,20 @@ public class RentalCarController {
 
     private final RentalCarService carService;
 
-    @PostMapping("/api/v1/cars")
+    @PostMapping("/api/v1/car")
     public Long save(@RequestBody RentalCarSaveRequestDto requestDto){
         return carService.save(requestDto);
     }
 
-    @PutMapping("/api/v1/cars/{id}")
+    @PutMapping("/api/v1/car/{id}")
     public Long update(@PathVariable Long id, @RequestBody RentalCarUpdateRequestDto requestDto) {
         return carService.update(id, requestDto);
     }
 
-    @GetMapping("/api/v1/cars/{id}")
+    @GetMapping("/api/v1/car/{id}")
     public RentalCarResponseDto findById(@PathVariable Long id){
         return carService.findById(id);
     }
+
+
 }

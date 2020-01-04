@@ -56,7 +56,7 @@ class RentalCarControllerTest {
                 .costPerNight(cost)
                 .build();
 
-        String url = "http://localhost:" + port + "/api/v1/cars";
+        String url = "http://localhost:" + port + "/api/v1/car";
 
         //when
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
@@ -95,7 +95,7 @@ class RentalCarControllerTest {
                 .costPerNight(expectedCost)
                 .build();
 
-        String url = "http://localhost:" + port + "/api/v1/cars/" + updateId;
+        String url = "http://localhost:" + port + "/api/v1/car/" + updateId;
 
         HttpEntity<RentalCarUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 

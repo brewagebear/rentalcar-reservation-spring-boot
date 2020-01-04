@@ -24,7 +24,7 @@ public class RentalCarService {
     @Transactional
     public Long update(Long id, RentalCarUpdateRequestDto requestDto){
         RentalCar rentalCar = carRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
+                .orElseThrow(() -> new IllegalArgumentException("해당 차량이 없습니다. id=" + id));
 
         rentalCar.update(requestDto.getCarModelName(), requestDto.getCarImgSource(), requestDto.getCostPerNight());
         return id;
@@ -32,9 +32,22 @@ public class RentalCarService {
 
     public RentalCarResponseDto findById(Long id){
         RentalCar entity = carRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
+                .orElseThrow(() -> new IllegalArgumentException("해당 차량이 없습니다. id=" + id));
 
         return new RentalCarResponseDto(entity);
     }
 
+//    @Transactional
+//    public Long delete(Long id, RentalCarUpdateRequestDto requestDto) {
+//        RentalCar entity = carRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 차량이 존재하지 않습니다. id=" + id));
+//
+//        return carRepository.delete(entity);
+//    }
+
+//    public Long saveWithTag(String id, RentalCarSaveRequestDto requestDto) {
+//        RentalCar entity = carRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 차량이 존재하지 않습니다. id=" + id));
+//        return carRepository.save(requestDto.toEntity()).getId();
+//    }
 }

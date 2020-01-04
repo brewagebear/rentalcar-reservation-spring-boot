@@ -1,7 +1,6 @@
 package com.toyota.rentalcar.dev.dto;
 
 import com.toyota.rentalcar.dev.domain.RentalCar;
-import com.toyota.rentalcar.dev.domain.RentalCarType;
 import lombok.Getter;
 
 import java.math.BigDecimal;

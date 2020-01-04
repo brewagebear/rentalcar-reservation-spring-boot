@@ -52,13 +52,13 @@ class RentalCarTagSaveRequestDtoTest {
         Tag tag = tagRepo.findById(1L)
                 .orElse(null);
 
-        RentalCarTagSaveRequestDto dto3 = new RentalCarTagSaveRequestDto();
-        dto3.setTag(tag);
-        dto3.setCar(car);
-
-        carTagRepo.save(
-                dto3.toEntity()
-        );
+//        RentalCarTagSaveRequestDto dto3 = new RentalCarTagSaveRequestDto();
+//        dto3.setTag(tag);
+//        dto3.setCar(car);
+//
+//        carTagRepo.save(
+//                dto3.toEntity()
+//        );
 
         RentalCarTag rct = carTagRepo.findById(new RentalCarTagId(1L, 1L))
                 .orElse(null);
