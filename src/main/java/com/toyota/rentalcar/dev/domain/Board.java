@@ -25,10 +25,17 @@ public class Board extends BaseTimeEntity{
     @Lob
     private String content;
 
-    private int hit;
+    private int hit = 0;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "board",
+               cascade = CascadeType.ALL,
+               fetch = FetchType.LAZY)
     private List<Reply> replies;
+
+    @OneToMany(mappedBy = "board",
+               cascade = CascadeType.ALL,
+               fetch = FetchType.LAZY)
+    private List<FileEntity> files;
 
     @Builder
     public Board(String userName, String password, String email, String title, String content){
@@ -39,4 +46,10 @@ public class Board extends BaseTimeEntity{
         this.content  = content;
     }
 
+    public void addFile(FileEntity file){
+        this.files.add(file);
+    }
+    public void addReply(Reply reply){
+        this.replies.add(reply);
+    }
 }

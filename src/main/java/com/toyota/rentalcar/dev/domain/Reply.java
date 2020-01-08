@@ -16,9 +16,11 @@ public class Reply extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     private String replyText;
     private String replier;
 
+    @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 }

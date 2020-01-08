@@ -5,7 +5,6 @@ import com.toyota.rentalcar.dev.domain.Board;
 import com.toyota.rentalcar.dev.domain.Direction;
 import com.toyota.rentalcar.dev.domain.OrderBy;
 import com.toyota.rentalcar.dev.dto.BoardSaveRequestDto;
-import com.toyota.rentalcar.dev.dto.RentalCarSaveRequestDto;
 import com.toyota.rentalcar.dev.dto.UploadFileResponse;
 import com.toyota.rentalcar.dev.exceptions.PaginationSortingException;
 import com.toyota.rentalcar.dev.repositories.BoardRepository;
@@ -14,7 +13,6 @@ import com.toyota.rentalcar.dev.services.FileService;
 import com.toyota.rentalcar.dev.vo.PageMaker;
 import com.toyota.rentalcar.dev.vo.PageVO;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -26,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,49 +73,6 @@ public class BoardController {
         return boardService.findAll();
     }
 
-    @PostMapping("/upload")
-    public UploadFileResponse uploadFile(@RequestParam("file")MultipartFile file){
-        String fileName = fileService.storeFile(file);
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download/")
-                .path(fileName)
-                .toUriString();
-
-        return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
-    }
-
-    @PostMapping("/upload-multipart/{fileName:.+}")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files){
-        return Arrays.asList(files)
-                .stream()
-                .map(file -> uploadFile(file))
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request){
-
-        Resource resource = fileService.loadFileAsResource(fileName);
-
-        String contentType = null;
-
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex){
-            logger.info("파일 타입을 확인할 수가 없습니다.");
-        }
-
-        if(contentType == null){
-            contentType = "application/octet-stream";
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
-    }
-
     @GetMapping("/write")
     public void writeGET(@ModelAttribute("vo") Board vo){
 
@@ -148,5 +102,6 @@ public class BoardController {
         }
 
         return boardService.findJsonDataByCondition(orderBy, direction,  page, size);
+
     }
 }

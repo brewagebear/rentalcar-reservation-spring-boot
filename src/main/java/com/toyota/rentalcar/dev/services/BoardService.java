@@ -1,8 +1,11 @@
 package com.toyota.rentalcar.dev.services;
 
 import com.toyota.rentalcar.dev.domain.Board;
+import com.toyota.rentalcar.dev.domain.FileEntity;
 import com.toyota.rentalcar.dev.dto.BoardSaveRequestDto;
+import com.toyota.rentalcar.dev.dto.FileSaveRequestDto;
 import com.toyota.rentalcar.dev.repositories.BoardRepository;
+import com.toyota.rentalcar.dev.repositories.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +22,8 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+
+    private final FileRepository  fileRepository;
 
     @Transactional
     public Page<Board> findJsonDataByCondition(String orderBy, String direction, int page, int size){
@@ -39,7 +44,20 @@ public class BoardService {
 
     @Transactional
     public Long save(BoardSaveRequestDto requestDto) {
-        return boardRepository.save(requestDto.toEntity()).getId();
+        Board target = boardRepository.save(requestDto.toEntity());
+        List<FileEntity> files = target.getFiles();
+
+        if (files == null){
+            return target.getId();
+        } else {
+            for (FileEntity file : files) {
+                FileSaveRequestDto fileRequestDto = new FileSaveRequestDto();
+                fileRequestDto.setBoard(target);
+                fileRequestDto.setFileName(file.getFileName());
+                fileRepository.save(fileRequestDto.toEntity());
+            }
+        }
+        return target.getId();
     }
 
     @Transactional

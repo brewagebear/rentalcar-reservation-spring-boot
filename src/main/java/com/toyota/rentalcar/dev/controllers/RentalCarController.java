@@ -9,24 +9,24 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/vi/car")
 public class RentalCarController {
 
     private final RentalCarService carService;
 
-    @PostMapping("/api/v1/car")
+    @PostMapping("")
     public Long save(@RequestBody RentalCarSaveRequestDto requestDto){
         return carService.save(requestDto);
     }
 
-    @PutMapping("/api/v1/car/{id}")
+    @PutMapping("{id}")
     public Long update(@PathVariable Long id, @RequestBody RentalCarUpdateRequestDto requestDto) {
         return carService.update(id, requestDto);
     }
 
-    @GetMapping("/api/v1/car/{id}")
+    @GetMapping("{id}")
     public RentalCarResponseDto findById(@PathVariable Long id){
         return carService.findById(id);
     }
-
 
 }
