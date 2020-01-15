@@ -5,9 +5,12 @@ import com.toyota.rentalcar.dev.dto.RentalCarResponseDto;
 import com.toyota.rentalcar.dev.dto.RentalCarSaveRequestDto;
 import com.toyota.rentalcar.dev.dto.RentalCarUpdateRequestDto;
 import com.toyota.rentalcar.dev.repositories.RentalCarRepository;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -35,6 +38,11 @@ public class RentalCarService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 차량이 없습니다. id=" + id));
 
         return new RentalCarResponseDto(entity);
+    }
+
+    public RentalCar findOne(Long id){
+        return carRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 차량이 존재하지 않습니다. id=" + id));
     }
 
 //    @Transactional

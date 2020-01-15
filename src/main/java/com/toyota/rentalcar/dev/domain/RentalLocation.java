@@ -1,13 +1,13 @@
 package com.toyota.rentalcar.dev.domain;
 
-public enum RentalCarType {
+public enum RentalLocation {
 
-    GAUM("1"),
+    GUAM("1"),
     SAIPAN("2");
 
     private String rentalLocation;
 
-    RentalCarType(String rentalLocation) {
+    RentalLocation(String rentalLocation) {
         this.rentalLocation = rentalLocation;
     }
 }

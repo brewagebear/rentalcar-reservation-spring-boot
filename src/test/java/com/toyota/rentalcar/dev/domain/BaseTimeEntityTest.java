@@ -11,8 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -27,10 +25,10 @@ class BaseTimeEntityTest {
         //given
         LocalDateTime now = LocalDateTime.of(2019, 6, 4, 0, 0, 0);
         carRepository.save(RentalCar.builder()
-                .rentalCarType(RentalCarType.GAUM)
+                .rentalLocation(RentalLocation.GUAM)
                 .carModelName("도요타 야리스")
                 .costPerNight(BigDecimal.valueOf(20.00))
-                .carImgSource("테스트 경로")
+                .carImgURL("테스트 경로")
                 .build());
 
         //when

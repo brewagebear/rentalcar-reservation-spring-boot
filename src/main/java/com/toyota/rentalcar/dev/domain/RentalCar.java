@@ -1,10 +1,12 @@
 package com.toyota.rentalcar.dev.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@DynamicUpdate
 @Table(name = "tbl_rentalcar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RentalCar extends BaseTimeEntity {
@@ -23,25 +26,57 @@ public class RentalCar extends BaseTimeEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private RentalCarType rentalCarType;
+    private RentalLocation rentalLocation;
     private String  carModelName;
-    private String  carImgSource;
-    private BigDecimal costPerNight;
 
-    @OneToMany(mappedBy = "rentalCar", cascade = CascadeType.ALL)
-    private List<RentalCarTag> rentalCarTags = new ArrayList<>();
+    @Lob
+    private String extraEx;
+    private String  carImgURL;
+    private BigDecimal costDeposit;
+    private BigDecimal costPerNight;
+    private BigDecimal costPerNightWithGas;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
+    private List<BorrowedDate> borrowedDates = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
+    private List<InvalidDate> invalidDates = new ArrayList<>();
 
     @Builder
-    public RentalCar(RentalCarType rentalCarType, String carModelName, String carImgSource, BigDecimal costPerNight) {
-        this.rentalCarType = rentalCarType;
+    public RentalCar(RentalLocation rentalLocation,
+                     String carModelName,
+                     String extraEx,
+                     String carImgURL,
+                     BigDecimal costDeposit,
+                     BigDecimal costPerNight,
+                     BigDecimal costPerNightWithGas) {
+        this.rentalLocation      = rentalLocation;
+        this.carModelName        = carModelName;
+        this.extraEx             = extraEx;
+        this.carImgURL           = carImgURL;
+        this.costDeposit         = costDeposit;
+        this.costPerNight        = costPerNight;
+        this.costPerNightWithGas = costPerNightWithGas;
+    }
+
+    public void update(String carModelName, String carImgURL, BigDecimal costPerNight){
         this.carModelName = carModelName;
-        this.carImgSource = carImgSource;
+        this.carImgURL = carImgURL;
         this.costPerNight = costPerNight;
     }
 
-    public void update(String carModelName, String carImgSource, BigDecimal costPerNight){
-        this.carModelName = carModelName;
-        this.carImgSource = carImgSource;
-        this.costPerNight = costPerNight;
+    public void update(BorrowedDate borrowedDate) {
+        this.addBorrowedDate(borrowedDate);
     }
+    public void update(InvalidDate invalidDate) {
+        this.addInvalidDate(invalidDate);
+    }
+
+    public void addBorrowedDate(BorrowedDate borrowedDate){
+        this.borrowedDates.add(borrowedDate);
+    }
+    public void addInvalidDate(InvalidDate invalidDate) { this.invalidDates.add(invalidDate); }
+
 }

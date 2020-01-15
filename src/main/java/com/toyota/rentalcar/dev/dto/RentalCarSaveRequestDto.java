@@ -1,12 +1,13 @@
 package com.toyota.rentalcar.dev.dto;
 
-import com.toyota.rentalcar.dev.domain.RentalCarType;
+import com.toyota.rentalcar.dev.domain.RentalLocation;
 import com.toyota.rentalcar.dev.domain.RentalCar;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Lob;
 import java.math.BigDecimal;
 
 @Getter
@@ -14,28 +15,40 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class RentalCarSaveRequestDto {
 
-    private RentalCarType rentalCarType;
+    private RentalLocation rentalLocation;
     private String  carModelName;
-    private String  carImgSource;
+    private String extraEx;
+    private String  carImgURL;
+    private BigDecimal costDeposit;
     private BigDecimal costPerNight;
+    private BigDecimal costPerNightWithGas;
 
     @Builder
-    public RentalCarSaveRequestDto(RentalCarType carType,
+    public RentalCarSaveRequestDto(RentalLocation rentalLocation,
                                    String carModelName,
-                                   String carImgSource,
-                                   BigDecimal costPerNight){
-        this.rentalCarType = carType;
-        this.carModelName  = carModelName;
-        this.carImgSource  = carImgSource;
-        this.costPerNight  = costPerNight;
+                                   String carImgURL,
+                                   String extraEx,
+                                   BigDecimal costDeposit,
+                                   BigDecimal costPerNight,
+                                   BigDecimal costPerNightWithGas){
+        this.rentalLocation = rentalLocation;
+        this.carModelName   = carModelName;
+        this.carImgURL      = carImgURL;
+        this.extraEx        = extraEx;
+        this.costDeposit    = costDeposit;
+        this.costPerNight   = costPerNight;
+        this.costPerNightWithGas = costPerNightWithGas;
     }
 
     public RentalCar toEntity(){
         return RentalCar.builder()
-                .rentalCarType(rentalCarType)
+                .rentalLocation(rentalLocation)
                 .carModelName(carModelName)
-                .carImgSource(carImgSource)
+                .carImgURL(carImgURL)
+                .extraEx(extraEx)
+                .costDeposit(costDeposit)
                 .costPerNight(costPerNight)
+                .costPerNightWithGas(costPerNightWithGas)
                 .build();
     }
 }

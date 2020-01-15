@@ -1,7 +1,7 @@
 package com.toyota.rentalcar.dev.controllers;
 
 import com.toyota.rentalcar.dev.domain.RentalCar;
-import com.toyota.rentalcar.dev.domain.RentalCarType;
+import com.toyota.rentalcar.dev.domain.RentalLocation;
 import com.toyota.rentalcar.dev.dto.RentalCarSaveRequestDto;
 import com.toyota.rentalcar.dev.dto.RentalCarUpdateRequestDto;
 import com.toyota.rentalcar.dev.repositories.RentalCarRepository;
@@ -44,15 +44,15 @@ class RentalCarControllerTest {
     @Test
     public void 렌터카가_등록된다() throws Exception {
 
-        RentalCarType carType = RentalCarType.GAUM;
+        RentalLocation carType = RentalLocation.GUAM;
         String modelName      = "도요타 김리";
         String imgSource      = "테스트 이미지 경로";
         BigDecimal cost       = BigDecimal.valueOf(20.0);
 
         RentalCarSaveRequestDto requestDto = RentalCarSaveRequestDto.builder()
-                .carType(carType)
+                .rentalLocation(carType)
                 .carModelName(modelName)
-                .carImgSource(imgSource)
+                .carImgURL(imgSource)
                 .costPerNight(cost)
                 .build();
 
@@ -67,9 +67,9 @@ class RentalCarControllerTest {
 
         List<RentalCar> all = carRepository.findAll();
 
-        assertThat(all.get(0).getRentalCarType()).isEqualTo(carType);
+        assertThat(all.get(0).getRentalLocation()).isEqualTo(carType);
         assertThat(all.get(0).getCarModelName()).isEqualTo(modelName);
-        assertThat(all.get(0).getCarImgSource()).isEqualTo(imgSource);
+        assertThat(all.get(0).getCarImgURL()).isEqualTo(imgSource);
         assertThat(all.get(0).getCostPerNight()).isEqualTo(cost);
     }
 
@@ -77,9 +77,9 @@ class RentalCarControllerTest {
     public void 렌터카가_수정된다() throws Exception {
         //given
         RentalCar savedCar = carRepository.save(RentalCar.builder()
-                .rentalCarType(RentalCarType.GAUM)
+                .rentalLocation(RentalLocation.GUAM)
                 .carModelName("도요타 김리")
-                .carImgSource("테스트 경로")
+                .carImgURL("테스트 경로")
                 .costPerNight(BigDecimal.valueOf(20.00))
                 .build()
         );
@@ -108,7 +108,7 @@ class RentalCarControllerTest {
 
         List<RentalCar> all = carRepository.findAll();
         assertThat(all.get(0).getCarModelName()).isEqualTo(expectedName);
-        assertThat(all.get(0).getCarImgSource()).isEqualTo(expectedImgSource);
+        assertThat(all.get(0).getCarImgURL()).isEqualTo(expectedImgSource);
         assertThat(all.get(0).getCostPerNight()).isEqualTo(expectedCost);
 
     }
