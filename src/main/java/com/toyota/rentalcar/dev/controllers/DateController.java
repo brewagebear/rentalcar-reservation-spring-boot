@@ -1,7 +1,6 @@
 package com.toyota.rentalcar.dev.controllers;
 
 import com.toyota.rentalcar.dev.domain.RentalCar;
-import com.toyota.rentalcar.dev.dto.BorrowedDateSaveRequestDto;
 import com.toyota.rentalcar.dev.dto.InvalidDateSaveRequestDto;
 import com.toyota.rentalcar.dev.services.DateService;
 import com.toyota.rentalcar.dev.services.RentalCarService;
@@ -33,23 +32,6 @@ public class DateController {
         List<RentalCar> list = dateService.checkAvailableCars(startDate, endDate);
         map.put("RentalCar", list);
         return map;
-    }
-
-    @PostMapping("/borrowed-date/{id}")
-    public Long save(@PathVariable Long id,
-                     @RequestParam(value = "start_date") @DateTimeFormat(pattern = "yyyy-MM-dd") Calendar startDate,
-                     @RequestParam(value = "end_date") @DateTimeFormat(pattern = "yyyy-MM-dd") Calendar endDate){
-
-        RentalCar car = carService.findOne(id);
-        BorrowedDateSaveRequestDto target = new BorrowedDateSaveRequestDto();
-
-        target.setCar(car);
-        target.setStartDate(startDate);
-        target.setEndDate(endDate);
-
-        car.update(target.toEntity());
-
-        return dateService.saveBorrowedDate(target);
     }
 
     @PostMapping(value = "/invalid-date/{id}")

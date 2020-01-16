@@ -1,5 +1,6 @@
 package com.toyota.rentalcar.dev.domain.flow;
 
+import com.toyota.rentalcar.dev.domain.CarReservation;
 import com.toyota.rentalcar.dev.domain.Reservation;
 
 import javax.validation.Valid;
@@ -42,6 +43,8 @@ public class ReservationFlow {
     @Valid
     private Reservation reservation = new Reservation();
 
+    private CarReservation carReservation = new CarReservation();
+
     private List<StepDescription> stepDescriptions = new ArrayList<>();
 
     private Set<Step> completedSteps = new HashSet<>();
@@ -54,6 +57,14 @@ public class ReservationFlow {
         stepDescriptions.add(new StepDescription(2, "Guests", "Provide guest details"));
         stepDescriptions.add(new StepDescription(3, "Review", "Verify your reservation"));
         stepDescriptions.add(new StepDescription(4, "Payment", "Provide payment details"));
+    }
+
+    public CarReservation getCarReservation() {
+        return carReservation;
+    }
+
+    public void setCarReservation(CarReservation carReservation) {
+        this.carReservation = carReservation;
     }
 
     public Reservation getReservation() { return reservation; }

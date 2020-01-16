@@ -1,6 +1,6 @@
 package com.toyota.rentalcar.dev.dto;
 
-import com.toyota.rentalcar.dev.domain.BorrowedDate;
+import com.toyota.rentalcar.dev.domain.ReservationDates;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,10 @@ public class RentalCarUpdateRequestDto {
     private String carModelName;
     private String carImgSource;
     private BigDecimal costPerNight;
-    private BorrowedDate date;
+    private ReservationDates date;
 
     @Builder
-    public RentalCarUpdateRequestDto(String carModelName, String carImgSource, BigDecimal costPerNight, BorrowedDate date){
+    public RentalCarUpdateRequestDto(String carModelName, String carImgSource, BigDecimal costPerNight, ReservationDates date){
         this.carModelName = carModelName;
         this.carImgSource = carImgSource;
         this.costPerNight = costPerNight;

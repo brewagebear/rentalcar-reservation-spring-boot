@@ -1,13 +1,15 @@
 package com.toyota.rentalcar.dev.domain;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /***
@@ -18,11 +20,12 @@ import java.util.UUID;
 @Table(name = "tbl_reservation")
 @NoArgsConstructor
 public class Reservation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reservation_id")
     private Long id;
-    private UUID reservationId = UUID.randomUUID();
+
+    private UUID reservationRegNum = UUID.randomUUID();
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
@@ -30,8 +33,9 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private RentalLocation local;
 
-    @ManyToOne
-    private RentalCar rentalCar;
+    @Embedded
+    @Valid
+    private ReservationDates dates = new ReservationDates();
 
     @OneToOne
     private PersonalInfo personalInfo;
@@ -45,11 +49,24 @@ public class Reservation {
     private boolean iAirportMeeting;
     private int     numOfChild;
 
+    @OneToMany(mappedBy = "reservation")
+    private List<CarReservation> carReservations = new ArrayList<>();
+
     @Builder
-    public Reservation(ReservationStatus status, RentalLocation local, RentalCar rentalCar, PersonalInfo personalInfo, BigDecimal firstCost, BigDecimal lastCost, BigDecimal totalCost, boolean iGas, boolean iIceBox, boolean iAirportMeeting, int numOfChild) {
+    public Reservation(ReservationStatus status,
+                       RentalLocation local,
+                       ReservationDates dates,
+                       PersonalInfo personalInfo,
+                       BigDecimal firstCost,
+                       BigDecimal lastCost,
+                       BigDecimal totalCost,
+                       boolean iGas,
+                       boolean iIceBox,
+                       boolean iAirportMeeting,
+                       int numOfChild) {
         this.status          = status;
         this.local           = local;
-        this.rentalCar       = rentalCar;
+        this.dates           = dates;
         this.personalInfo    = personalInfo;
         this.firstCost       = firstCost;
         this.lastCost        = lastCost;
@@ -58,5 +75,9 @@ public class Reservation {
         this.iIceBox         = iIceBox;
         this.iAirportMeeting = iAirportMeeting;
         this.numOfChild      = numOfChild;
+    }
+
+    public void setDates(ReservationDates dates) {
+        this.dates = dates;
     }
 }

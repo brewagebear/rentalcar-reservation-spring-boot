@@ -38,11 +38,11 @@ public class RentalCar extends BaseTimeEntity {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
-    private List<BorrowedDate> borrowedDates = new ArrayList<>();
+    private List<InvalidDate> invalidDates = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
-    private List<InvalidDate> invalidDates = new ArrayList<>();
+    @OneToMany(mappedBy = "rentalCar")
+    private List<CarReservation> carReservations = new ArrayList<>();
 
     @Builder
     public RentalCar(RentalLocation rentalLocation,
@@ -67,16 +67,13 @@ public class RentalCar extends BaseTimeEntity {
         this.costPerNight = costPerNight;
     }
 
-    public void update(BorrowedDate borrowedDate) {
-        this.addBorrowedDate(borrowedDate);
-    }
     public void update(InvalidDate invalidDate) {
         this.addInvalidDate(invalidDate);
     }
 
-    public void addBorrowedDate(BorrowedDate borrowedDate){
-        this.borrowedDates.add(borrowedDate);
-    }
     public void addInvalidDate(InvalidDate invalidDate) { this.invalidDates.add(invalidDate); }
+    public void addReservation(CarReservation carReservation) {
+        this.carReservations.add(carReservation);
+    }
 
 }
