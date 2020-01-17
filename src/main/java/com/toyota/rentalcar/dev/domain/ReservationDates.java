@@ -2,6 +2,7 @@ package com.toyota.rentalcar.dev.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,6 +13,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+@Getter
 @Embeddable
 @NoArgsConstructor
 public class ReservationDates implements Serializable {

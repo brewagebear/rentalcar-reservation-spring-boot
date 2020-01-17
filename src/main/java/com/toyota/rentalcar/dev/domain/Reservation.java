@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -20,12 +22,13 @@ import java.util.UUID;
 @Table(name = "tbl_reservation")
 @NoArgsConstructor
 public class Reservation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reservation_id")
-    private Long id;
 
-    private UUID reservationRegNum = UUID.randomUUID();
+    @Id
+    @Type(type = "uuid-char")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "reservation_id", columnDefinition = "BINARY(36)")
+    private UUID id;
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
@@ -79,5 +82,9 @@ public class Reservation {
 
     public void setDates(ReservationDates dates) {
         this.dates = dates;
+    }
+
+    public void update(ReservationStatus status){
+        this.status = status;
     }
 }

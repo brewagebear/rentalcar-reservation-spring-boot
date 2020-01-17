@@ -4,8 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,14 +15,17 @@ import java.io.Serializable;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CarReservationId implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @EqualsAndHashCode.Include
     private Long rentalCar;
 
+    @Type(type = "uuid-char")
     @EqualsAndHashCode.Include
-    private Long reservation;
+    private UUID reservation;
 
-    public CarReservationId(Long rentalCar, Long reservation) {
-        rentalCar = rentalCar;
-        reservation = reservation;
+    public CarReservationId(Long rentalCar, UUID reservation) {
+        this.rentalCar = rentalCar;
+        this.reservation = reservation;
     }
 }

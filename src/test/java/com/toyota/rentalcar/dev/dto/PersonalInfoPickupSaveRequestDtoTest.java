@@ -1,15 +1,5 @@
 package com.toyota.rentalcar.dev.dto;
 
-import com.toyota.rentalcar.dev.domain.*;
-import com.toyota.rentalcar.dev.repositories.CustomerRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 //@RunWith(SpringRunner.class)

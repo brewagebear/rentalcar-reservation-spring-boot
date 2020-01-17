@@ -1,17 +1,17 @@
 package com.toyota.rentalcar.dev.dto;
 
 import com.toyota.rentalcar.dev.domain.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class ReservationSaveRequestDto {
-
+public class ReservationResponseDto {
+    private UUID id;
     private ReservationStatus status;
     private RentalLocation local;
     private ReservationDates dates;
@@ -25,6 +25,21 @@ public class ReservationSaveRequestDto {
     private boolean iAirportMeeting;
     private int     numOfChild;
 
+    @Builder
+    public ReservationResponseDto(Reservation entity) {
+        this.id              = entity.getId();
+        this.status          = entity.getStatus();
+        this.local           = entity.getLocal();
+        this.dates           = entity.getDates();
+        this.personalInfo    = entity.getPersonalInfo();
+        this.firstCost       = entity.getFirstCost();
+        this.lastCost        = entity.getLastCost();
+        this.totalCost       = entity.getTotalCost();
+        this.iGas            = entity.isIGas();
+        this.iIceBox         = entity.isIIceBox();
+        this.iAirportMeeting = entity.isIAirportMeeting();
+        this.numOfChild      = entity.getNumOfChild();
+    }
 
     public Reservation toEntity(){
         return Reservation.builder()

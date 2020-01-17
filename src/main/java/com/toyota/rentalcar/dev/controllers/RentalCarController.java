@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/car")
@@ -22,6 +24,11 @@ public class RentalCarController {
     public Long save(@RequestBody RentalCarSaveRequestDto requestDto){
         return carService.save(requestDto);
     }
+
+//    @PostMapping("/saveAll")
+//    public Long saveAll(@RequestBody List<RentalCarSaveRequestDto> requestDtoList){
+//        return carService.saveAll(requestDtoList);
+//    }
 
     @PutMapping("/update/{id}")
     public Long update(@PathVariable Long id, @RequestBody RentalCarUpdateRequestDto requestDto) {

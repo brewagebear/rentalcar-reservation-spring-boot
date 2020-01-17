@@ -29,5 +29,4 @@ public class CarReservation {
         this.rentalCar = rentalCar;
         this.reservation = reservation;
     }
-
 }
