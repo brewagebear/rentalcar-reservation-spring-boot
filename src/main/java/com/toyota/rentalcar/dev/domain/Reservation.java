@@ -84,7 +84,7 @@ public class Reservation {
         this.dates = dates;
     }
 
-    public void update(ReservationStatus status){
+    public void updateStatus(ReservationStatus status){
         this.status = status;
     }
 }

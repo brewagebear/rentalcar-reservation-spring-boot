@@ -49,7 +49,7 @@ public class UploadFileUtils {
         return replaceSavedFilePath(datePath, uuidFileName);
     }
 
-    public static void deleteFile(String fileName, HttpServletRequest request) throws IOException {
+    public static boolean deleteFile(String fileName, HttpServletRequest request) throws IOException {
 
         String rootPath = getRootPath(fileName, request); // 기본 경로 추출
 
@@ -57,11 +57,11 @@ public class UploadFileUtils {
         MediaType mediaType = MediaUtils.getMediaType(fileName);
         if(mediaType != null){
             String originalImg = fileName.substring(0, 12) + fileName.substring(14);
-            new File(rootPath + originalImg.replace('/',  File.separatorChar)).delete();
+            return new File(rootPath + originalImg.replace('/',  File.separatorChar)).delete();
         }
 
         // 2. 파일 삭제
-        new File(rootPath + fileName.replace('/', File.separatorChar)).delete();
+        return new File(rootPath + fileName.replace('/', File.separatorChar)).delete();
     }
 
     // 파일 출력을 위한 HttpHeader 설정

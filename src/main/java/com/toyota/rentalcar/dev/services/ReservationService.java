@@ -54,7 +54,7 @@ public class ReservationService {
     public CarReservationResponseDto updateConfirmStatus(UUID id, ReservationStatus status) throws BadRequestException {
         Optional<CarReservation> maybeReservation = carReservationRepository.findAllByReservationId(id);
         if(maybeReservation.isPresent()){
-            maybeReservation.get().getReservation().update(status);
+            maybeReservation.get().getReservation().updateStatus(status);
             return new CarReservationResponseDto(maybeReservation.get());
         }
         throw new BadRequestException("허용되지 않는 행위입니다.");

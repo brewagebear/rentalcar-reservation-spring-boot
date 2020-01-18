@@ -80,7 +80,7 @@ public class BoardController {
 
     @PostMapping("/write")
     public Long save(@RequestBody BoardSaveRequestDto requestDto){
-        return boardService.save(requestDto);
+            return boardService.saveArticle(requestDto);
     }
 
     @GetMapping(value = "/pagination",

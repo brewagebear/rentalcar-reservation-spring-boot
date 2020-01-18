@@ -2,6 +2,7 @@ package com.toyota.rentalcar.dev.controllers;
 
 import com.toyota.rentalcar.dev.commons.utils.UploadFileUtils;
 import com.toyota.rentalcar.dev.dto.UploadFileResponse;
+import com.toyota.rentalcar.dev.dto.payload.ApiResponse;
 import com.toyota.rentalcar.dev.services.FileService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
@@ -29,7 +30,7 @@ public class BoardFileController {
     private static final Logger logger = LoggerFactory.getLogger(BoardFileController.class);
 
     @PostMapping(value = "/upload")
-    public UploadFileResponse uploadFile(@RequestParam("file")MultipartFile file, HttpServletRequest request){
+    public UploadFileResponse uploadFile(@RequestParam("upload")MultipartFile file, HttpServletRequest request){
         try {
             String savedFilePath = UploadFileUtils.uploadFile(file, request);
             String fileName      = FilenameUtils.getName(savedFilePath);
@@ -39,7 +40,7 @@ public class BoardFileController {
                     .queryParam("fileName", savedFilePath)
                     .toUriString();
 
-            return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+            return new UploadFileResponse(true, fileName, fileDownloadUri, file.getContentType());
 
         } catch (Exception e){
             e.printStackTrace();
@@ -52,7 +53,6 @@ public class BoardFileController {
 
         HttpHeaders httpHeaders = UploadFileUtils.getHttpHeaders(fileName);
         String rootPath = UploadFileUtils.getRootPath(fileName, request) + "/";
-        logger.info(rootPath);
 
         Resource resource = UploadFileUtils.getResource(fileName, rootPath);
 
@@ -73,5 +73,20 @@ public class BoardFileController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(String.valueOf(httpHeaders))
                 .body(resource);
+    }
+    // 수정해야함.
+    @DeleteMapping("delete")
+    public ResponseEntity<?> deleteFile(@RequestParam String fileName, HttpServletRequest request) throws Exception {
+
+        String rootPath = UploadFileUtils.getRootPath(fileName, request);
+        logger.info(rootPath + fileName);
+
+        boolean isDeleted = UploadFileUtils.deleteFile(rootPath + fileName, request);
+
+        if(isDeleted){
+            return ResponseEntity.accepted().body(new ApiResponse(true, fileName + " 파일이 성공적으로 삭제되었습니다."));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, fileName + " 파일이 존재하지 않습니다."));
+        }
     }
 }

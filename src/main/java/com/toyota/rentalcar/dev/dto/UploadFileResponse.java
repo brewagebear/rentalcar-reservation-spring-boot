@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UploadFileResponse {
+    private Boolean uploaded;
     private String fileName;
-    private String fileDownloadUri;
+    private String uri;
     private String fileType;
-    private long   size;
 
-    public UploadFileResponse(String fileName, String fileDownloadUri, String fileType, long size){
+    public UploadFileResponse(Boolean uploaded,String fileName, String fileDownloadUri, String fileType){
+        this.uploaded        = uploaded;
         this.fileName        = fileName;
-        this.fileDownloadUri = fileDownloadUri;
+        this.uri             = fileDownloadUri;
         this.fileType        = fileType;
-        this.size            = size;
     }
 }
