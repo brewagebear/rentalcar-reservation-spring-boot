@@ -1,6 +1,7 @@
 package com.toyota.rentalcar.dev.dto;
 
 import com.toyota.rentalcar.dev.domain.PersonalInfo;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,16 +24,17 @@ public class PersonalInfoSaveRequestDto {
     private LocalDateTime arrivalTime;
     private String requirement;
 
-    public PersonalInfoSaveRequestDto(String name, String phoneNumber, String email, String hotel, String pickupPlace, String returnPlace, String airLine, LocalDateTime arrivalTime, String requirement) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.email       = email;
-        this.hotel = hotel;
-        this.pickupPlace = pickupPlace;
-        this.returnPlace = returnPlace;
-        this.airLine = airLine;
-        this.arrivalTime = arrivalTime;
-        this.requirement = requirement;
+    @Builder
+    public PersonalInfoSaveRequestDto(PersonalInfo entity){
+        this.name        = entity.getName();
+        this.phoneNumber = entity.getPhoneNumber();
+        this.email       = entity.getEmail();
+        this.hotel       = entity.getHotel();
+        this.pickupPlace = entity.getPickupPlace();
+        this.returnPlace = entity.getReturnPlace();
+        this.airLine     = entity.getAirLine();
+        this.arrivalTime = entity.getArrivalTime();
+        this.requirement = entity.getRequirement();
     }
 
     public PersonalInfo toEntity(){

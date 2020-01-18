@@ -25,7 +25,6 @@ public class ReservationSaveRequestDto {
     private boolean iAirportMeeting;
     private int     numOfChild;
 
-
     public Reservation toEntity(){
         return Reservation.builder()
                 .status(status)

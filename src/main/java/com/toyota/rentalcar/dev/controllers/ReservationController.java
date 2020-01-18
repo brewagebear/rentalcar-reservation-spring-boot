@@ -62,15 +62,8 @@ public class ReservationController {
 
         CarReservationSaveRequestDto carReservationDto = new CarReservationSaveRequestDto();
         ReservationSaveRequestDto    reservationDto    = new ReservationSaveRequestDto();
-        PersonalInfoSaveRequestDto   personalDto       = new PersonalInfoSaveRequestDto(reservationSaveRequestDto.getPersonalInfo().getName(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getPhoneNumber(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getEmail(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getHotel(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getPickupPlace(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getReturnPlace(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getAirLine(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getArrivalTime(),
-                                                                                        reservationSaveRequestDto.getPersonalInfo().getRequirement());
+        PersonalInfoSaveRequestDto   personalDto       = new PersonalInfoSaveRequestDto(reservationSaveRequestDto.getPersonalInfo());
+
         RentalCar maybeCar = carService.findOne(id);
         ReservationDates dates = ReservationDates.builder()
                 .startDate(startDate)
