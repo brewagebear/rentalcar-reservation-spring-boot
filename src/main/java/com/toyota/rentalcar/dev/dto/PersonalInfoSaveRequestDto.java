@@ -29,9 +29,9 @@ public class PersonalInfoSaveRequestDto {
         this.name        = entity.getName();
         this.phoneNumber = entity.getPhoneNumber();
         this.email       = entity.getEmail();
-        this.hotel       = entity.getHotel();
-        this.pickupPlace = entity.getPickupPlace();
-        this.returnPlace = entity.getReturnPlace();
+//        this.hotel       = entity.getHotel();
+//        this.pickupPlace = entity.getPickupPlace();
+//        this.returnPlace = entity.getReturnPlace();
         this.airLine     = entity.getAirLine();
         this.arrivalTime = entity.getArrivalTime();
         this.requirement = entity.getRequirement();

@@ -29,8 +29,7 @@ public class RentalCarService {
     public Long update(Long id, RentalCarUpdateRequestDto requestDto){
         RentalCar rentalCar = carRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 차량이 없습니다. id=" + id));
-
-        rentalCar.update(requestDto.getCarModelName(), requestDto.getCarImgSource(), requestDto.getCostPerNight());
+        rentalCar.update(requestDto);
         return id;
     }
 
@@ -48,6 +47,10 @@ public class RentalCarService {
 
     public void saveAll(List<RentalCarSaveRequestDto> requestDto){
 
+    }
+
+    public void delete(Long id) {
+        carRepository.deleteById(id);
     }
 
 //    @Transactional

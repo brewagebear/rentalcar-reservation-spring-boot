@@ -91,7 +91,7 @@ class RentalCarControllerTest {
 
         RentalCarUpdateRequestDto requestDto = RentalCarUpdateRequestDto.builder()
                 .carModelName(expectedName)
-                .carImgSource(expectedImgSource)
+                .carImgURL(expectedImgSource)
                 .costPerNight(expectedCost)
                 .build();
 

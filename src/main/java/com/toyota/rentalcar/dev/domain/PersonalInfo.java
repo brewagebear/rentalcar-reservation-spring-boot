@@ -27,9 +27,16 @@ public class PersonalInfo {
     private String name;
     private String phoneNumber;
     private String email;
-    private String hotel;
-    private String pickupPlace;
-    private String returnPlace;
+
+//    @OneToOne(mappedBy = "personalInfo")
+//    private Accommodation accommodation;
+//
+//    @OneToOne(mappedBy = "personalInfo")
+//    private ReturnStation returnStation;
+//
+//    @OneToOne(mappedBy = "personalInfo")
+//    private PickupStation pickupStation;
+
     private String airLine;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
@@ -53,9 +60,9 @@ public class PersonalInfo {
         this.name        = name;
         this.phoneNumber = phoneNumber;
         this.email       = email;
-        this.hotel       = hotel;
-        this.pickupPlace = pickupPlace;
-        this.returnPlace = returnPlace;
+//        this.hotel       = hotel;
+//        this.pickupPlace = pickupPlace;
+//        this.returnPlace = returnPlace;
         this.airLine     = airLine;
         this.arrivalTime = arrivalTime;
         this.requirement = requirement;

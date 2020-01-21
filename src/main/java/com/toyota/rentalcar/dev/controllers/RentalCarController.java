@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@CrossOrigin
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/car")
@@ -30,9 +29,14 @@ public class RentalCarController {
 //        return carService.saveAll(requestDtoList);
 //    }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Long update(@PathVariable Long id, @RequestBody RentalCarUpdateRequestDto requestDto) {
         return carService.update(id, requestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        carService.delete(id);
     }
 
     @GetMapping("/car-detail/{id}")

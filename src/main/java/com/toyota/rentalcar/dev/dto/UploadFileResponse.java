@@ -17,4 +17,11 @@ public class UploadFileResponse {
         this.uri             = fileDownloadUri;
         this.fileType        = fileType;
     }
+
+    public UploadFileResponse(UploadFileResponse resp) {
+        this.uploaded   = resp.getUploaded();
+        this.fileName   = resp.getFileName();
+        this.uri        = resp.getUri();
+        this.fileType   = resp.getFileType();
+    }
 }

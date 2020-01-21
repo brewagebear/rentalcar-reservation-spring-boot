@@ -2,6 +2,7 @@ package com.toyota.rentalcar.dev.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.toyota.rentalcar.dev.dto.RentalCarUpdateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,10 +62,15 @@ public class RentalCar extends BaseTimeEntity {
         this.costPerNightWithGas = costPerNightWithGas;
     }
 
-    public void update(String carModelName, String carImgURL, BigDecimal costPerNight){
-        this.carModelName = carModelName;
-        this.carImgURL = carImgURL;
-        this.costPerNight = costPerNight;
+    @Builder
+    public void update(RentalCarUpdateRequestDto updateEntity){
+        this.rentalLocation = updateEntity.getRentalLocation();
+        this.carModelName   = updateEntity.getCarModelName();
+        this.carImgURL      = updateEntity.getCarImgURL();
+        this.extraEx        = updateEntity.getExtraEx();
+        this.costPerNight   = updateEntity.getCostPerNight();
+        this.costDeposit    = updateEntity.getCostDeposit();
+        this.costPerNightWithGas = updateEntity.getCostPerNightWithGas();
     }
 
     public void update(InvalidDate invalidDate) {

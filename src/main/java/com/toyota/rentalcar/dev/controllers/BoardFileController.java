@@ -12,25 +12,28 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/board/file")
-public class BoardFileController {
+@SessionAttributes("files")
+public class BoardFileController extends SessionController {
 
-    private final FileService fileService;
-
-    private static final Logger logger = LoggerFactory.getLogger(BoardFileController.class);
+    private final HttpSession session;
 
     @PostMapping(value = "/upload")
-    public UploadFileResponse uploadFile(@RequestParam("upload")MultipartFile file, HttpServletRequest request){
+    public ResponseEntity<?> uploadFile(@RequestParam("upload")MultipartFile file, HttpServletRequest request){
         try {
             String savedFilePath = UploadFileUtils.uploadFile(file, request);
             String fileName      = FilenameUtils.getName(savedFilePath);
@@ -40,12 +43,21 @@ public class BoardFileController {
                     .queryParam("fileName", savedFilePath)
                     .toUriString();
 
-            return new UploadFileResponse(true, fileName, fileDownloadUri, file.getContentType());
+            UploadFileResponse resp = new UploadFileResponse(true, fileName, fileDownloadUri, file.getContentType());
 
+            if (session.getAttribute("files") == null || session.getAttribute("files").equals("")) {
+                    List<UploadFileResponse> files = new ArrayList<>();
+                    files.add(resp);
+                    uploadFileSession(session, files);
+                } else {
+                    List<UploadFileResponse> files = (List<UploadFileResponse>) session.getAttribute("files");
+                    files.add(resp);
+                    uploadFileSession(session, files);
+                }
+            return ResponseEntity.accepted().body(new UploadFileResponse(resp));
         } catch (Exception e){
-            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getCause() + " 예상치 못한 오류가 발생하였습니다."));
         }
-        return null;
     }
 
     @GetMapping("/display")

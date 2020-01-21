@@ -24,10 +24,12 @@ public class FileEntity extends BaseTimeEntity{
     private Board board;
 
     private String fileName;
+    private String uri;
 
     @Builder
-    public FileEntity(Board board, String fileName){
+    public FileEntity(Board board, String fileName, String uri){
         this.board      = board;
         this.fileName   = fileName;
+        this.uri        = uri;
     }
 }

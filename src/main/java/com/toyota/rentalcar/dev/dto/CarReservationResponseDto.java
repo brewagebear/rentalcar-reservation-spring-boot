@@ -61,9 +61,9 @@ public class CarReservationResponseDto {
        this.name          = entity.getReservation().getPersonalInfo().getName();
        this.phoneNum      = entity.getReservation().getPersonalInfo().getPhoneNumber();
        this.email         = entity.getReservation().getPersonalInfo().getEmail();
-       this.hotel         = entity.getReservation().getPersonalInfo().getHotel();
-       this.pickupPlace   = entity.getReservation().getPersonalInfo().getPickupPlace();
-       this.returnPlace   = entity.getReservation().getPersonalInfo().getReturnPlace();
+//       this.hotel         = entity.getReservation().getPersonalInfo().getHotel();
+//       this.pickupPlace   = entity.getReservation().getPersonalInfo().getPickupPlace();
+//       this.returnPlace   = entity.getReservation().getPersonalInfo().getReturnPlace();
        this.airLine       = entity.getReservation().getPersonalInfo().getAirLine();
        this.arrivalTime   = entity.getReservation().getPersonalInfo().getArrivalTime();
        this.requirement   = entity.getReservation().getPersonalInfo().getRequirement();

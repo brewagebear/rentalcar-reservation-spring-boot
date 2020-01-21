@@ -13,11 +13,13 @@ public class FileSaveRequestDto {
 
     private Board board;
     private String fileName;
+    private String uri;
 
     public FileEntity toEntity(){
         return FileEntity.builder()
                 .board(board)
                 .fileName(fileName)
+                .uri(uri)
                 .build();
     }
 }
