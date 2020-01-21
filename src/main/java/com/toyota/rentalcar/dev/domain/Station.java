@@ -35,4 +35,14 @@ public class Station {
         this.name           = name;
         this.value          = value;
     }
+
+    public void update(RentalLocation location,
+                       StationType stationType,
+                       String name,
+                       String value){
+        this.rentalLocation = location;
+        this.stationType    = stationType;
+        this.name           = name;
+        this.value          = value;
+    }
 }

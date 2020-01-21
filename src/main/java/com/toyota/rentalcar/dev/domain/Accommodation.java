@@ -1,15 +1,19 @@
 package com.toyota.rentalcar.dev.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @Table(name = "TBL_ACCOMMODATION")
+@EqualsAndHashCode(exclude = {"id", "value"})
 public class Accommodation {
 
     @Id
@@ -23,7 +27,8 @@ public class Accommodation {
     private String value;
 
     @Builder
-    public Accommodation(RentalLocation rentalLocation, String name, String value){
+    public Accommodation(Long id, RentalLocation rentalLocation, String name, String value){
+        this.id             = id;
         this.rentalLocation = rentalLocation;
         this.name  = name;
         this.value = value;
