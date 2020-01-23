@@ -1,10 +1,10 @@
 package com.toyota.rentalcar.dev.controllers;
 
-import com.toyota.rentalcar.dev.domain.RentalCar;
-import com.toyota.rentalcar.dev.domain.RentalLocation;
-import com.toyota.rentalcar.dev.dto.RentalCarSaveRequestDto;
-import com.toyota.rentalcar.dev.dto.RentalCarUpdateRequestDto;
-import com.toyota.rentalcar.dev.repositories.RentalCarRepository;
+import com.toyota.rentalcar.dev.RentalCar.model.RentalCar;
+import com.toyota.rentalcar.dev.RentalCar.model.RentalLocation;
+import com.toyota.rentalcar.dev.RentalCar.dto.RentalCarSaveRequestDto;
+import com.toyota.rentalcar.dev.RentalCar.dto.RentalCarUpdateRequestDto;
+import com.toyota.rentalcar.dev.RentalCar.repositories.RentalCarRepository;
 import org.junit.After;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

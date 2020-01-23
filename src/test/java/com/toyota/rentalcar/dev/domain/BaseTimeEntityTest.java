@@ -1,6 +1,8 @@
 package com.toyota.rentalcar.dev.domain;
 
-import com.toyota.rentalcar.dev.repositories.RentalCarRepository;
+import com.toyota.rentalcar.dev.RentalCar.model.RentalCar;
+import com.toyota.rentalcar.dev.RentalCar.model.RentalLocation;
+import com.toyota.rentalcar.dev.RentalCar.repositories.RentalCarRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

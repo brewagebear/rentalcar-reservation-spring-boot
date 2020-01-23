@@ -1,7 +1,7 @@
 package com.toyota.rentalcar.dev.commons.utils;
 
-import com.toyota.rentalcar.dev.config.FileStorageProperties;
-import com.toyota.rentalcar.dev.exceptions.MyFileNotFoundException;
+import com.toyota.rentalcar.dev.commons.config.FileStorageProperties;
+import com.toyota.rentalcar.dev.commons.exceptions.MyFileNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class UploadFileUtils {
 
     private static FileStorageProperties properties;
-
     private static final Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
 
     public static String uploadFile(MultipartFile file, HttpServletRequest request) throws Exception {
@@ -36,10 +34,10 @@ public class UploadFileUtils {
         byte[] fileData = file.getBytes();
 
         // 1. 파일명 중복 방지 처리를 위하여 UUID로 파일명 변경
-        String uuidFileName = getUuidFileName(originalFileName);
+        String uuidFileName =  getUuidFileName(originalFileName);
 
         // 2. 파일 업로드 경로 설정
-        String rootPath = getRootPath(originalFileName, request);
+        String rootPath = getRootPath(uuidFileName, request);
         String datePath = getDatePath(rootPath);
 
         // 3. 서버에 파일 저장
@@ -49,19 +47,19 @@ public class UploadFileUtils {
         return replaceSavedFilePath(datePath, uuidFileName);
     }
 
-    public static boolean deleteFile(String fileName, HttpServletRequest request) throws IOException {
+    public static void deleteFile(String fileName, HttpServletRequest request) throws IOException {
 
         String rootPath = getRootPath(fileName, request); // 기본 경로 추출
 
         // 1. 원본 이미지 파일 삭제
         MediaType mediaType = MediaUtils.getMediaType(fileName);
-        if(mediaType != null){
-            String originalImg = fileName.substring(0, 12) + fileName.substring(14);
-            return new File(rootPath + originalImg.replace('/',  File.separatorChar)).delete();
+        if (mediaType != null) {
+            String originalImg = fileName.substring(0, 14) + fileName.substring(14);
+            new File(originalImg.replace('/', File.separatorChar)).delete();
         }
 
-        // 2. 파일 삭제
-        return new File(rootPath + fileName.replace('/', File.separatorChar)).delete();
+        // 2. 파일 삭제(썸네일이미지 or 일반파일)
+        new File(rootPath + fileName.replace('/', File.separatorChar)).delete();
     }
 
     // 파일 출력을 위한 HttpHeader 설정
