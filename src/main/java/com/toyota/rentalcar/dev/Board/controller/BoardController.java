@@ -6,7 +6,6 @@ import com.toyota.rentalcar.dev.Board.dto.ReplySaveRequestDto;
 import com.toyota.rentalcar.dev.Board.dto.passwordForm;
 import com.toyota.rentalcar.dev.Board.model.Board;
 import com.toyota.rentalcar.dev.Board.model.BoardType;
-import com.toyota.rentalcar.dev.Board.model.Reply;
 import com.toyota.rentalcar.dev.Board.service.BoardService;
 import com.toyota.rentalcar.dev.Board.vo.PageMaker;
 import com.toyota.rentalcar.dev.Board.vo.PageVO;
@@ -35,7 +34,7 @@ public class BoardController {
 
     @ApiOperation(value = "게시글 등록 API")
     @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody BoardSaveRequestDto requestDto){
+    public ResponseEntity<?> save(@RequestBody BoardSaveRequestDto requestDto) throws ApiException {
         if(!requestDto.getFiles().isEmpty()){
             boardService.saveArticleWithFiles(requestDto);
             return ResponseEntity.accepted().body(new ApiResponse(true, "글이 성공적으로 등록되었습니다."));
@@ -44,13 +43,26 @@ public class BoardController {
         return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 등록되었습니다."));
     }
 
-    @ApiOperation(value = "비밀번호 체크 API")
+    @ApiOperation(value = "게시글 비밀번호 체크 API")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userPass", value = "입력한 패스워드", required = true, dataType = "string")
+            @ApiImplicitParam(name = "id", value = "게시글 id", required = true, dataType = "long")
     })
-    public boolean comparePassword(@PathVariable Long id, @RequestBody passwordForm requestDto) throws ApiException {
-        return boardService.tryToUpdateArticleOrReply(id, requestDto.getPassword(), requestDto.isBoard());
+    @PostMapping("/{id}")
+    public ResponseEntity<?> comparePasswordInArticle(@PathVariable Long id, @RequestBody passwordForm requestDto) throws ApiException {
+        if(boardService.tryToUpdateArticle(id, requestDto.getPassword())){
+            return viewBoardDetail(id);
+        }
+        throw new ApiException("INVALID_PASSWORD", "잘못된 비밀번호를 입력하셨습니다.");
     }
+
+//    @ApiOperation(value = "게시글 수정 API")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "id", value = "게시글 id", required = true, dataType = "long")
+//    })
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardSaveRequestDto requestDto){
+//
+//    }
 
     @ApiOperation(value = "게시글 타입 수정 API")
     @ApiImplicitParams({
@@ -76,7 +88,7 @@ public class BoardController {
     })
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> viewBoardDetail(@PathVariable Long id){
-        return ResponseEntity.ok().body(boardService.findArticleById(id));
+        return ResponseEntity.ok().body(boardService.getArticleById(id));
     }
 
     @ApiOperation(value = "댓글 등록 API")
@@ -88,23 +100,48 @@ public class BoardController {
         return boardService.addReply(boardId, requestDto);
     }
 
+    @ApiOperation(value = "게시글에 달린 댓글 리스트 보기 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "게시글 id", required = true, dataType = "long")
+    })
+    @GetMapping(value = "{board_id}/reply")
+    private ResponseEntity<?> viewReplyList(@PathVariable Long id) throws ApiException {
+        return ResponseEntity.ok().body(boardService.getReplyListById(id));
+    }
+
+    @ApiOperation(value = "댓글 조회 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "board_id", value = "게시글 id", required = true, dataType = "long"),
+            @ApiImplicitParam(name = "reply_id", value = "댓글 id", required = true, dataType = "long")
+    })
+    @GetMapping(value = "{board_id}/reply/{reply_id}")
+    private ResponseEntity<?> viewReplyOne(@PathVariable("board_id")Long boardId, @PathVariable("reply_id")Long replyId) throws ApiException {
+        return ResponseEntity.ok().body(boardService.getReplyByBoardIdAndReplyId(boardId, replyId));
+    }
+
+
     @ApiOperation(value = "댓글 삭제 API")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "board_id", value = "게시글 id", required = true, dataType = "long"),
             @ApiImplicitParam(name = "reply_id", value = "댓글 id", required = true, dataType = "long")
     })
-    @DeleteMapping(value = "/reply/{board_id}/{reply_id}")
+    @DeleteMapping(value = "/{board_id}/reply/{reply_id}")
     public ResponseEntity<?> removeReply(@PathVariable("board_id")Long boardId, @PathVariable("reply_id")Long replyId){
         return boardService.removeReply(boardId, replyId);
     }
 
-    @ApiOperation(value = "댓글 수정 API")
+    @ApiOperation(value = "댓글 수정 전 비밀번호 API")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "board_id", value = "게시글 id", required = true, dataType = "long")
+            @ApiImplicitParam(name = "board_id", value = "게시글 id", required = true, dataType = "long"),
+            @ApiImplicitParam(name = "reply_id", value = "댓글 id", required = true, dataType = "long")
     })
-    @PutMapping(value = "/reply/{board_id}")
-    public ResponseEntity<?> modifyReply(@PathVariable("board_id")Long boardId,
-                                         @RequestBody Reply reply) throws ApiException {
-        return boardService.modifyReply(boardId, reply);
+    @PostMapping("/{board_id}/reply/{reply_id}")
+    public ResponseEntity<?> comparePasswordInReply(@PathVariable("board_id") Long boardId,
+                                                    @PathVariable("reply_id") Long replyId,
+                                                    @RequestBody passwordForm requestDto) throws ApiException {
+        if(boardService.tryToUpdateReply(replyId, requestDto.getPassword())){
+            return viewReplyOne(boardId, replyId);
+        }
+        throw new ApiException("INVALID_PASSWORD", "잘못된 비밀번호를 입력하셨습니다.");
     }
 }

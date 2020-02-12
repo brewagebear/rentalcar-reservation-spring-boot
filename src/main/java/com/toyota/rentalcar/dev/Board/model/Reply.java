@@ -7,14 +7,18 @@ import com.toyota.rentalcar.dev.commons.model.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @Entity
 @Table(name = "TBL_REPLIES")
 @NoArgsConstructor
-public class Reply extends BaseTimeEntity {
+public class Reply extends BaseTimeEntity implements PasswordProcessing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +34,9 @@ public class Reply extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
-//    @JsonBackReference
-//    @JoinColumn(name = "member_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Member member;
-
+    @NotNull
     @JsonIgnore
+    @Size(min = 5, max = 60, message = "{password.size}")
     private String userPass;
 
     @Builder
@@ -50,5 +51,16 @@ public class Reply extends BaseTimeEntity {
         this.content = replyText;
         this.userName = replier;
         this.board   = board;
+    }
+
+    @Override
+    public void encodingPassword(String submittedPassword) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.userPass = passwordEncoder.encode(submittedPassword);
+    }
+
+    @Override
+    public boolean passwordCheckWithPasswordEncoder(BCryptPasswordEncoder passwordEncoder, String submittedPassword) {
+        return passwordEncoder.matches(submittedPassword, this.getUserPass());
     }
 }

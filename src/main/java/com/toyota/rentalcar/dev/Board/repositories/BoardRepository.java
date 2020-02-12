@@ -1,12 +1,11 @@
 package com.toyota.rentalcar.dev.Board.repositories;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.toyota.rentalcar.dev.Board.model.Board;
 import com.toyota.rentalcar.dev.domain.QBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-
-import com.querydsl.core.types.Predicate;
 
 public interface BoardRepository extends JpaRepository<Board, Long>, QuerydslPredicateExecutor<Board> {
 

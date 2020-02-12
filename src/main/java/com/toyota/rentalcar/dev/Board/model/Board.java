@@ -6,34 +6,49 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toyota.rentalcar.dev.commons.model.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Entity
 @Getter
 @Table(name = "TBL_BOARD")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board extends BaseTimeEntity {
+public class Board extends BaseTimeEntity implements PasswordProcessing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long id;
 
+    @NotNull
     private String userName;
 
+    @NotNull
     @JsonIgnore
+    @Size(min = 5, max = 60, message = "{password.size}")
     private String userPass;
 
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
 
+    @Email
     private String email;
+
+    @NotNull
     private String title;
 
     @Lob
+    @NotNull
     private String content;
 
     @ColumnDefault("0")
@@ -75,6 +90,17 @@ public class Board extends BaseTimeEntity {
     }
     public void updateBoardType(BoardType type){
         this.boardType = type;
+    }
+
+    @Override
+    public void encodingPassword(String submittedPassword) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.userPass = passwordEncoder.encode(submittedPassword);
+    }
+
+    @Override
+    public boolean passwordCheckWithPasswordEncoder(BCryptPasswordEncoder passwordEncoder, String submittedPassword) {
+        return passwordEncoder.matches(submittedPassword, this.getUserPass());
     }
 }
 

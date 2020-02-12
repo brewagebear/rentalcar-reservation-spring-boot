@@ -10,11 +10,8 @@ import lombok.Setter;
 public class passwordForm {
 
     private String password;
-    private boolean isBoard;
 
-    public passwordForm(String password, boolean isBoard) {
+    public passwordForm(String password) {
         this.password = password;
-        this.isBoard  = isBoard;
     }
-
 }
