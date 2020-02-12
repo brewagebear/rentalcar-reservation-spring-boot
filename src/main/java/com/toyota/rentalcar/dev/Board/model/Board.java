@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Board extends BaseTimeEntity {
     private String userName;
 
     @JsonIgnore
-    private String password;
+    private String userPass;
 
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
@@ -42,19 +43,19 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board",
                cascade = CascadeType.ALL,
                fetch = FetchType.LAZY)
-    private List<Reply> replies;
+    private List<Reply> replies = new ArrayList<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "board",
                cascade = CascadeType.ALL,
                fetch = FetchType.LAZY)
-    private List<File> files;
+    private List<File> files = new ArrayList<>();
 
     @Builder
     public Board(BoardType boardType, String userName, String password, String email, String title, String content){
         this.boardType = boardType;
         this.userName = userName;
-        this.password = password;
+        this.userPass = password;
         this.email    = email;
         this.title    = title;
         this.content  = content;
@@ -63,13 +64,17 @@ public class Board extends BaseTimeEntity {
     @PrePersist
     public void perPersist(){
         if(this.hit == null) this.hit = 0;
+        if(this.boardType == null) this.boardType = BoardType.NON_FIXED_HEADER;
     }
 
+    public void addReply(Reply reply) {
+        this.replies.add(reply);
+    }
     public void updateViewHit(Integer viewHit){
         this.hit = hit + viewHit;
     }
-
     public void updateBoardType(BoardType type){
         this.boardType = type;
     }
 }
+

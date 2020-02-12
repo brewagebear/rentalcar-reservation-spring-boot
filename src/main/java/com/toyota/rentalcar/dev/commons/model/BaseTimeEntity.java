@@ -18,7 +18,6 @@ public class BaseTimeEntity {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @JsonIgnore
     @LastModifiedDate
     private LocalDateTime modifiedDate;
     
