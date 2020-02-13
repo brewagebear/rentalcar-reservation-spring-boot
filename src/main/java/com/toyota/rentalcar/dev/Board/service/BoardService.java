@@ -13,7 +13,6 @@ import com.toyota.rentalcar.dev.Board.repositories.ReplyRepository;
 import com.toyota.rentalcar.dev.Board.vo.PageVO;
 import com.toyota.rentalcar.dev.RentalCar.dto.payload.ApiResponse;
 import com.toyota.rentalcar.dev.commons.exceptions.ApiException;
-import com.toyota.rentalcar.dev.commons.exceptions.BadRequestException;
 import com.toyota.rentalcar.dev.commons.model.ApiExceptionData;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -40,12 +39,6 @@ public class BoardService {
 
     private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
 
-    /***
-     * 파일이 없는 게시글 등록 Method
-     * 현재 게시판의 id값을 리턴하는데 Request 리턴하게끔 컨트롤러에서 바꿔야함.
-     * @param requestDto
-     * @return boardId
-     */
     @Transactional
     public void saveArticle(@Valid BoardSaveRequestDto requestDto) throws ApiException{
         try {
@@ -57,12 +50,6 @@ public class BoardService {
         }
     }
 
-    /***
-     * 파일이 있는 게시글 등록 Method
-     * 현재 게시판의 id값을 리턴하는데 Request 리턴하게끔 컨트롤러에서 바꿔야함.
-     * @param requestDto
-     * @return
-     */
     @Transactional
     public void saveArticleWithFiles(@Valid BoardSaveRequestDto requestDto) {
 
@@ -112,13 +99,36 @@ public class BoardService {
     }
 
     @Transactional
-    public Board getArticleById(Long id) {
-        Optional<Board> maybeBoard = boardRepository.findById(id);
-        if(maybeBoard.isPresent()) {
-            maybeBoard.get().updateViewHit(1);
-            return maybeBoard.get();
-        }
-        throw new BadRequestException(id + " 해당 게시글을 찾을 수가 없습니다.");
+    public Map<String, Object> getArticleById(Long id) throws ApiException {
+        Optional<Board> optBoard = boardRepository.findById(id);
+        Optional<Board> previousArticle = boardRepository.findFirstByIdIsLessThanOrderByIdAsc(id);
+        Optional<Board> nextArticle = boardRepository.findFirstByIdIsGreaterThanOrderByIdDesc(id);
+        Map<String , Object> resultMap = new HashMap<>();
+        Map<String, String> smallPagination = new HashMap<>();
+
+        return optBoard.map(article -> {
+            previousArticle.map(previous -> {
+                smallPagination.put("previous-article-id", previous.getId().toString());
+                return smallPagination;
+            }).orElseGet( () -> {
+                smallPagination.put("previous-article-id", null);
+                return smallPagination;
+            });
+
+            nextArticle.map(next -> {
+                smallPagination.put("next-article-id", next.getId().toString());
+                return smallPagination;
+            }).orElseGet( () -> {
+                smallPagination.put("next-article-id", null);
+                return smallPagination;
+            });
+
+            resultMap.put("board", article);
+            resultMap.put("previous-article", previousArticle);
+            resultMap.put("next-article", nextArticle);
+
+            return resultMap;
+        }).orElseThrow(ApiException::new);
     }
 
     @Transactional

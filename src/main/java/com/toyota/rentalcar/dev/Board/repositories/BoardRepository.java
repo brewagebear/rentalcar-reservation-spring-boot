@@ -7,10 +7,12 @@ import com.toyota.rentalcar.dev.domain.QBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface BoardRepository extends JpaRepository<Board, Long>, QuerydslPredicateExecutor<Board> {
 
     public default Predicate makePredicate(String type, String keyword){
-
         BooleanBuilder builder = new BooleanBuilder();
         QBoard board = QBoard.board;
 
@@ -33,8 +35,8 @@ public interface BoardRepository extends JpaRepository<Board, Long>, QuerydslPre
                         .and(board.content.like("%" + keyword + "%"));
                 break;
         }
-
         return builder;
     }
-
+    public Optional<Board> findFirstByIdIsLessThanOrderByIdAsc(Long id);
+    public Optional<Board> findFirstByIdIsGreaterThanOrderByIdDesc(Long id);
 }

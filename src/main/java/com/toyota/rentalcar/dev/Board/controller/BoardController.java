@@ -98,7 +98,7 @@ public class BoardController {
             @ApiImplicitParam(name = "board_id", value = "게시글 id", required = true, dataType = "long")
     })
     @GetMapping(value = "/{board_id}")
-    public ResponseEntity<?> viewBoardDetail(@PathVariable("board_id")Long boardId){
+    public ResponseEntity<?> viewBoardDetail(@PathVariable("board_id")Long boardId) throws ApiException {
         return ResponseEntity.ok().body(boardService.getArticleById(boardId));
     }
 
