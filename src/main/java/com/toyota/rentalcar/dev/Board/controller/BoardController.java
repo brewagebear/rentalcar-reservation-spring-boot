@@ -23,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1/board")
@@ -53,14 +55,14 @@ public class BoardController {
         return ResponseEntity.ok().body(boardService.updateArticleType(id, type));
     }
 
-//    @ApiOperation(value = "게시글 수정 API")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "id", value = "게시글 id", required = true, dataType = "long")
-//    })
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardSaveRequestDto requestDto){
-//
-//    }
+    @ApiOperation(value = "게시글 수정 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "board_id", value = "게시글 id", required = true, dataType = "long")
+    })
+    @PutMapping("/{board_id}")
+    public ResponseEntity<?> updateBoard(@PathVariable("board_id")Long boardId, @Valid @RequestBody BoardSaveRequestDto updateRequestDto){
+        return boardService.updateArticle(boardId, updateRequestDto);
+    }
 
     @ApiOperation(value = "게시글 수정 전 비밀번호 체크 API")
     @ApiImplicitParams({
@@ -146,7 +148,7 @@ public class BoardController {
     @PutMapping(value = "/{board_id}/reply/{reply_id}")
     public ResponseEntity<?> updateReply(@PathVariable("board_id")Long boardId,
                                          @PathVariable("reply_id")Long replyId,
-                                         @RequestBody Reply updateRequest) throws ApiException {
+                                         @Valid @RequestBody ReplySaveRequestDto updateRequest) throws ApiException {
         return boardService.updateReply(boardId, replyId, updateRequest);
     }
 

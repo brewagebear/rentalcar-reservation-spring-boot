@@ -67,10 +67,10 @@ public class Board extends BaseTimeEntity implements PasswordProcessing {
     private List<File> files = new ArrayList<>();
 
     @Builder
-    public Board(BoardType boardType, String userName, String password, String email, String title, String content){
+    public Board(BoardType boardType, String userName, String userPass, String email, String title, String content){
         this.boardType = boardType;
         this.userName = userName;
-        this.userPass = password;
+        this.userPass = userPass;
         this.email    = email;
         this.title    = title;
         this.content  = content;
@@ -92,10 +92,23 @@ public class Board extends BaseTimeEntity implements PasswordProcessing {
         this.boardType = type;
     }
 
+    public void updateArticle(Board board) {
+        this.boardType = board.getBoardType();
+        this.userName  = board.getUserName();
+        setUserPass(board.getUserPass());
+        this.email     = board.getEmail();
+        this.title     = board.getTitle();
+        this.content   = board.getContent();
+    }
+
+    public void setUserPass(String rawPassword){
+        this.userPass = encodingPassword(rawPassword);
+    }
+
     @Override
-    public void encodingPassword(String submittedPassword) {
+    public String encodingPassword(String submittedPassword) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.userPass = passwordEncoder.encode(submittedPassword);
+        return passwordEncoder.encode(submittedPassword);
     }
 
     @Override

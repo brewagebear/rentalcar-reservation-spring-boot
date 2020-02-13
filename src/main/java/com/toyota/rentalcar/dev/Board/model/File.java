@@ -36,4 +36,8 @@ public class File extends BaseTimeEntity {
         this.fileName   = fileName;
         this.uri        = uri;
     }
+
+    public void updateBoardFK(Board board){
+        this.board = board;
+    }
 }

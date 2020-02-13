@@ -14,7 +14,7 @@ import java.util.List;
 public class BoardSaveRequestDto {
 
     private String userName;
-    private String password;
+    private String userPass;
     private String email;
     private String title;
     private String content;
@@ -23,7 +23,7 @@ public class BoardSaveRequestDto {
     @Builder
     BoardSaveRequestDto(String userName, String password, String email, String title, String content, List<String> files){
         this.userName = userName;
-        this.password = password;
+        this.userPass = password;
         this.email    = email;
         this.title    = title;
         this.content  = content;
@@ -33,7 +33,7 @@ public class BoardSaveRequestDto {
     public Board toEntity(){
         return Board.builder()
                 .userName(userName)
-                .password(password)
+                .userPass(userPass)
                 .email(email)
                 .title(title)
                 .content(content)

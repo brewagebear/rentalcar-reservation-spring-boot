@@ -48,16 +48,20 @@ public class Reply extends BaseTimeEntity implements PasswordProcessing {
     }
 
     public void update(String replyText, String replier, String userPass, Board board){
-        this.content = replyText;
+        this.content  = replyText;
         this.userName = replier;
-        this.userPass = userPass;
-        this.board   = board;
+        setUserPass(userPass);
+        this.board    = board;
+    }
+
+    public void setUserPass(String rawPassword){
+        this.userPass = encodingPassword(rawPassword);
     }
 
     @Override
-    public void encodingPassword(String submittedPassword) {
+    public String encodingPassword(String submittedPassword) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.userPass = passwordEncoder.encode(submittedPassword);
+        return passwordEncoder.encode(submittedPassword);
     }
 
     @Override
