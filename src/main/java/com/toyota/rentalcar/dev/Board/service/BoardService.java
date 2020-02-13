@@ -147,7 +147,7 @@ public class BoardService {
 
     @Transactional
     public List<Reply> getReplyListById(long id) throws ApiException {
-        List<Reply> maybeReply = replyRepository.findAllById(Collections.singleton(id));
+        List<Reply> maybeReply = replyRepository.findAllByBoard_IdOrderByIdAsc(id);
         if(maybeReply.size() != 0){
             return maybeReply;
         }
@@ -183,16 +183,16 @@ public class BoardService {
     }
 
     @Transactional
-    public ResponseEntity<List<Reply>> modifyReply(Long boardId, Reply reply) throws ApiException {
+    public ResponseEntity<List<Reply>> updateReply(Long boardId, Long replyId, Reply updateRequest) throws ApiException {
         Board board = boardRepository.getOne(boardId);
 
         try {
-            replyRepository.findById(reply.getId()).ifPresent(origin -> {
-                reply.update(reply.getContent(), reply.getUserName(), board);
+            replyRepository.findById(replyId).ifPresent(reply -> {
+                reply.update(updateRequest.getContent(), updateRequest.getUserName(), updateRequest.getUserPass(), board);
                 replyRepository.save(reply);
             });
         } catch (Exception e){
-            throw new ApiException("INVALID_REPLY_ID", "댓글 id가 잘못되었습니다.", new ApiExceptionData().add("reply_id", reply.getId()));
+            throw new ApiException("INVALID_REPLY_ID", "댓글 id가 잘못되었습니다.", new ApiExceptionData().add("reply_id", replyId));
         }
         return new ResponseEntity<>(getListByBoard(board), HttpStatus.CREATED);
     }

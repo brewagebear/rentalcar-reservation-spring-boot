@@ -47,9 +47,10 @@ public class Reply extends BaseTimeEntity implements PasswordProcessing {
         this.board    = board;
     }
 
-    public void update(String replyText, String replier, Board board){
+    public void update(String replyText, String replier, String userPass, Board board){
         this.content = replyText;
         this.userName = replier;
+        this.userPass = userPass;
         this.board   = board;
     }
 
