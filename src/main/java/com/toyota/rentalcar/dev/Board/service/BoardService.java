@@ -11,6 +11,7 @@ import com.toyota.rentalcar.dev.Board.repositories.BoardRepository;
 import com.toyota.rentalcar.dev.Board.repositories.FileRepository;
 import com.toyota.rentalcar.dev.Board.repositories.ReplyRepository;
 import com.toyota.rentalcar.dev.Board.vo.PageVO;
+import com.toyota.rentalcar.dev.RentalCar.dto.payload.ApiResponse;
 import com.toyota.rentalcar.dev.commons.exceptions.ApiException;
 import com.toyota.rentalcar.dev.commons.exceptions.BadRequestException;
 import com.toyota.rentalcar.dev.commons.model.ApiExceptionData;
@@ -183,7 +184,7 @@ public class BoardService {
     }
 
     @Transactional
-    public ResponseEntity<List<Reply>> updateReply(Long boardId, Long replyId, Reply updateRequest) throws ApiException {
+    public ResponseEntity<?> updateReply(Long boardId, Long replyId, Reply updateRequest) throws ApiException {
         Board board = boardRepository.getOne(boardId);
 
         try {
@@ -194,7 +195,16 @@ public class BoardService {
         } catch (Exception e){
             throw new ApiException("INVALID_REPLY_ID", "댓글 id가 잘못되었습니다.", new ApiExceptionData().add("reply_id", replyId));
         }
-        return new ResponseEntity<>(getListByBoard(board), HttpStatus.CREATED);
+        return ResponseEntity.accepted().body(new ApiResponse(true, "댓글이 정상적으로 삭제되었습니다."));
+    }
+
+    public ResponseEntity<?> deleteArticle(Long id) throws ApiException {
+        try {
+            boardRepository.deleteById(id);
+        } catch (Exception e){
+            throw new ApiException("INVALID_BOARD_ID", "게시글 id가 잘못되었습니다.", new ApiExceptionData().add("reply_id", id));
+        }
+        return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 삭제되었습니다."));
     }
 }
 

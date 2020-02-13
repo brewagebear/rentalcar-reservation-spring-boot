@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 public class BoardController {
 
     private final BoardService boardService;
-
     private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
 
     @ApiOperation(value = "게시글 등록 API")
@@ -54,14 +53,14 @@ public class BoardController {
         return ResponseEntity.ok().body(boardService.updateArticleType(id, type));
     }
 
-    @ApiOperation(value = "게시글 수정 API")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "게시글 id", required = true, dataType = "long")
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardSaveRequestDto requestDto){
-
-    }
+//    @ApiOperation(value = "게시글 수정 API")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "id", value = "게시글 id", required = true, dataType = "long")
+//    })
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardSaveRequestDto requestDto){
+//
+//    }
 
     @ApiOperation(value = "게시글 수정 전 비밀번호 체크 API")
     @ApiImplicitParams({
@@ -80,8 +79,8 @@ public class BoardController {
             @ApiImplicitParam(name = "id", value = "게시글 id", required = true, dataType = "long")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardSaveRequestDto requestDto){
-
+    public ResponseEntity<?> updateBoard(@PathVariable Long id) throws ApiException {
+        return boardService.deleteArticle(id);
     }
 
     @ApiOperation(value = "페이지네이션 처리 API")
