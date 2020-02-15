@@ -35,24 +35,20 @@ public class BoardController {
 
     @ApiOperation(value = "QNA 게시글 등록 API")
     @PostMapping("/qna")
-    public ResponseEntity<?> saveQnaArticle(@RequestBody BoardRequestDto requestDto) throws ApiException {
+    public ResponseEntity<ApiResponse> saveQnaArticle(@RequestBody BoardRequestDto requestDto) throws ApiException {
         if(requestDto.getFiles() != null){
-            boardService.saveArticleWithFiles(requestDto, false);
-            return ResponseEntity.accepted().body(new ApiResponse(true, "게시글이 성공적으로 등록되었습니다."));
+            return boardService.saveArticleWithFiles(requestDto, false);
         }
-        boardService.saveArticle(requestDto, false);
-        return ResponseEntity.accepted().body(new ApiResponse(true, "게시글이 성공적으로 등록되었습니다."));
+        return boardService.saveArticle(requestDto, false);
     }
 
     @ApiOperation(value = "공지사항 게시글 등록 API")
     @PostMapping("/notice")
-    public ResponseEntity<?> saveNoticeArticle(@RequestBody BoardRequestDto requestDto) throws ApiException {
+    public ResponseEntity<ApiResponse> saveNoticeArticle(@RequestBody BoardRequestDto requestDto) throws ApiException {
         if(requestDto.getFiles() != null){
-            boardService.saveArticleWithFiles(requestDto, true);
-            return ResponseEntity.accepted().body(new ApiResponse(true, "게시글이 성공적으로 등록되었습니다."));
+            return boardService.saveArticleWithFiles(requestDto, true);
         }
-        boardService.saveArticle(requestDto, true);
-        return ResponseEntity.accepted().body(new ApiResponse(true, "게시글이 성공적으로 등록되었습니다."));
+        return boardService.saveArticle(requestDto, true);
     }
 
     @ApiOperation(value = "게시글 타입 수정 API")
@@ -61,8 +57,8 @@ public class BoardController {
             @ApiImplicitParam(name = "board_type", value = "게시글 타입 (상단고정인지 아닌지)", required = true, dataType = "string")
     })
     @PutMapping("/{board_id}/{board_type}")
-    public ResponseEntity<?> updateBoardType(@PathVariable("board_id")Long id, @PathVariable("board_type") BoardType type) throws ApiException {
-        return ResponseEntity.ok().body(boardService.updateArticleType(id, type));
+    public ResponseEntity<ApiResponse> updateBoardType(@PathVariable("board_id")Long id, @PathVariable("board_type") BoardType type) throws ApiException {
+        return boardService.updateArticleType(id, type);
     }
 
     @ApiOperation(value = "게시글 수정 API")

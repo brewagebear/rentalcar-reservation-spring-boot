@@ -35,8 +35,13 @@ public class BoardService {
 
     private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
 
+    /**
+     * 파일이 없는 게시글 저장 메소드
+     * @throws ApiException
+     * @Author Seansin(nalpum1993@gmail.com)
+     */
     @Transactional
-    public void saveArticle(BoardRequestDto requestDto, boolean isNotice) throws ApiException{
+    public ResponseEntity<ApiResponse> saveArticle(BoardRequestDto requestDto, boolean isNotice) throws ApiException{
         try {
             Board board = requestDto.toEntity();
             board.setUserPass(board.getUserPass());
@@ -45,10 +50,14 @@ public class BoardService {
         } catch (Exception e){
             throw new ApiException("INVALID_ARTICLE_POST", "게시글 형식이 잘못되었습니다.", new ApiExceptionData().add("board", requestDto));
         }
+        return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 등록되었습니다."));
     }
 
+    /**
+     * 파일이 있는 게시글 저장 메소드
+     */
     @Transactional
-    public void saveArticleWithFiles(BoardRequestDto requestDto, boolean isNotice) {
+    public ResponseEntity<ApiResponse> saveArticleWithFiles(BoardRequestDto requestDto, boolean isNotice) {
         Board board = requestDto.toEntity();
         board.setUserPass(requestDto.getUserPass());
 
@@ -67,6 +76,7 @@ public class BoardService {
         }
         board.setBoardCategory(isNotice);
         boardRepository.save(board);
+        return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 등록되었습니다."));
     }
 
     @Transactional
@@ -77,26 +87,6 @@ public class BoardService {
     @Transactional
     public Page<Board> qnaPagination(PageVO vo, Pageable page){
         return boardRepository.findByBoardCategoryQna(boardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
-    }
-
-    @Transactional
-    public boolean tryToUpdateArticle(long id, String password) throws ApiException {
-        Optional<Board> optBoard = boardRepository.findById(id);
-        if(optBoard.isPresent()){
-            return optBoard.get().passwordCheckWithPasswordEncoder(passwordEncoder, password);
-        } else {
-            throw new ApiException("INVALID_BOARD_ID", "게시글 번호를 잘못 입력하였습니다.", new ApiExceptionData().add("board_id", id));
-        }
-    }
-
-    @Transactional
-    public boolean tryToUpdateReply(long replyId, String password) throws ApiException {
-        Optional<Reply> optReply = replyRepository.findById(replyId);
-        if(optReply.isPresent()){
-            return optReply.get().passwordCheckWithPasswordEncoder(passwordEncoder, password);
-        } else {
-            throw new ApiException("INVALID_REPLY_ID", "댓글 번호를 잘못 입력하셨습니다.", new ApiExceptionData().add("reply_id", replyId));
-        }
     }
 
     @Transactional
@@ -134,14 +124,60 @@ public class BoardService {
     }
 
     @Transactional
-    public Board updateArticleType(Long id, BoardType type) throws ApiException {
-        Optional<Board> maybeBoard = boardRepository.findById(id);
+    public ResponseEntity<ApiResponse> updateArticleType(Long id, BoardType type) throws ApiException {
+        Optional<Board> optBoard = boardRepository.findById(id);
 
-        if(maybeBoard.isPresent()) {
-            maybeBoard.get().updateBoardType(type);
-            return maybeBoard.get();
+        if(optBoard.isPresent()) {
+            optBoard.get().updateBoardType(type);
+            return ResponseEntity.ok().body(new ApiResponse(true, "게시판 타입이 정상적으로 수정되었습니다."));
         }
         throw new ApiException("INVALID_BOARD_ID", "해당 게시글을 찾을 수가 없습니다.", new ApiExceptionData().add("board_id", id));
+    }
+
+    @Transactional
+    public boolean tryToUpdateArticle(long id, String password) throws ApiException {
+        Optional<Board> optBoard = boardRepository.findById(id);
+        if(optBoard.isPresent()){
+            return optBoard.get().passwordCheckWithPasswordEncoder(passwordEncoder, password);
+        } else {
+            throw new ApiException("INVALID_BOARD_ID", "게시글 번호를 잘못 입력하였습니다.", new ApiExceptionData().add("board_id", id));
+        }
+    }
+
+    public ResponseEntity<ApiResponse> updateArticle(Long id, BoardRequestDto updateRequest) {
+        try {
+            boardRepository.findById(id).ifPresent(article -> {
+                article.updateArticle(updateRequest.toEntity());
+
+                if(updateRequest.getFiles() != null){
+                    List<File> originFiles = article.getFiles();
+                    originFiles.addAll(article.getFiles());
+
+                    List<File> uniqueFiles = new ArrayList<File>(new HashSet<File>(originFiles));
+
+                    fileRepository.findAllByBoard_Id(id).ifPresent(files -> {
+                        uniqueFiles.retainAll(files);
+                        for (File file : uniqueFiles) {
+                            file.updateBoardFK(article);
+                        }
+                        fileRepository.saveAll(uniqueFiles);
+                    });
+                }
+                boardRepository.save(article);
+            });
+            return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 수정되었습니다."));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "수정에 실패하였습니다", e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<ApiResponse> deleteArticle(Long id) throws ApiException {
+        try {
+            boardRepository.deleteById(id);
+        } catch (Exception e){
+            throw new ApiException("INVALID_BOARD_ID", "게시글 id가 잘못되었습니다.", new ApiExceptionData().add("reply_id", id));
+        }
+        return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 삭제되었습니다."));
     }
 
     @Transactional
@@ -181,6 +217,31 @@ public class BoardService {
         return replyRepository.findAllByBoard_IdOrderByIdAsc(board.getId());
     }
 
+    @Transactional
+    public boolean tryToUpdateReply(long replyId, String password) throws ApiException {
+        Optional<Reply> optReply = replyRepository.findById(replyId);
+        if(optReply.isPresent()){
+            return optReply.get().passwordCheckWithPasswordEncoder(passwordEncoder, password);
+        } else {
+            throw new ApiException("INVALID_REPLY_ID", "댓글 번호를 잘못 입력하셨습니다.", new ApiExceptionData().add("reply_id", replyId));
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<?> updateReply(Long boardId, Long replyId, ReplyRequestDto updateRequest) throws ApiException {
+        Board board = boardRepository.getOne(boardId);
+
+        try {
+            replyRepository.findById(replyId).ifPresent(reply -> {
+                reply.update(updateRequest.getContent(), updateRequest.getUserName(), updateRequest.getUserPass(), board);
+                replyRepository.save(reply);
+            });
+        } catch (Exception e){
+            throw new ApiException("INVALID_REPLY_ID", "댓글 id가 잘못되었습니다.", new ApiExceptionData().add("cause", e.getCause()));
+        }
+        return ResponseEntity.accepted().body(new ApiResponse(true, "댓글이 정상적으로 수정되었습니다."));
+    }
+
     // 수정해야함
     @Transactional
     public ResponseEntity<List<Reply>> removeReply(Long boardId, Long replyId){
@@ -192,57 +253,6 @@ public class BoardService {
         ).orElse(false);
 
         return new ResponseEntity<>(getListByBoard(board), HttpStatus.OK);
-    }
-
-    @Transactional
-    public ResponseEntity<?> updateReply(Long boardId, Long replyId, ReplyRequestDto updateRequest) throws ApiException {
-        Board board = boardRepository.getOne(boardId);
-
-        try {
-                replyRepository.findById(replyId).ifPresent(reply -> {
-                reply.update(updateRequest.getContent(), updateRequest.getUserName(), updateRequest.getUserPass(), board);
-                replyRepository.save(reply);
-            });
-        } catch (Exception e){
-            throw new ApiException("INVALID_REPLY_ID", "댓글 id가 잘못되었습니다.", new ApiExceptionData().add("cause", e.getCause()));
-        }
-        return ResponseEntity.accepted().body(new ApiResponse(true, "댓글이 정상적으로 수정되었습니다."));
-    }
-
-    public ResponseEntity<?> deleteArticle(Long id) throws ApiException {
-        try {
-            boardRepository.deleteById(id);
-        } catch (Exception e){
-            throw new ApiException("INVALID_BOARD_ID", "게시글 id가 잘못되었습니다.", new ApiExceptionData().add("reply_id", id));
-        }
-        return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 삭제되었습니다."));
-    }
-
-    public ResponseEntity<?> updateArticle(Long id, BoardRequestDto updateRequest) {
-        try {
-            boardRepository.findById(id).ifPresent(article -> {
-                article.updateArticle(updateRequest.toEntity());
-
-                if(updateRequest.getFiles() != null){
-                    List<File> originFiles = article.getFiles();
-                    originFiles.addAll(article.getFiles());
-
-                    List<File> uniqueFiles = new ArrayList<File>(new HashSet<File>(originFiles));
-
-                    fileRepository.findAllByBoard_Id(id).ifPresent(files -> {
-                        uniqueFiles.retainAll(files);
-                        for (File file : uniqueFiles) {
-                            file.updateBoardFK(article);
-                        }
-                        fileRepository.saveAll(uniqueFiles);
-                    });
-                }
-                boardRepository.save(article);
-            });
-            return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 수정되었습니다."));
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
-        }
     }
 }
 
