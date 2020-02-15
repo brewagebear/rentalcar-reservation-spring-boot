@@ -1,12 +1,9 @@
 package com.toyota.rentalcar.dev.Board.service;
 
-import com.toyota.rentalcar.dev.Board.dto.BoardSaveRequestDto;
-import com.toyota.rentalcar.dev.Board.dto.FileSaveRequestDto;
-import com.toyota.rentalcar.dev.Board.dto.ReplySaveRequestDto;
-import com.toyota.rentalcar.dev.Board.model.Board;
-import com.toyota.rentalcar.dev.Board.model.BoardType;
-import com.toyota.rentalcar.dev.Board.model.File;
-import com.toyota.rentalcar.dev.Board.model.Reply;
+import com.toyota.rentalcar.dev.Board.dto.BoardRequestDto;
+import com.toyota.rentalcar.dev.Board.dto.FileRequestDto;
+import com.toyota.rentalcar.dev.Board.dto.ReplyRequestDto;
+import com.toyota.rentalcar.dev.Board.model.*;
 import com.toyota.rentalcar.dev.Board.repositories.BoardRepository;
 import com.toyota.rentalcar.dev.Board.repositories.FileRepository;
 import com.toyota.rentalcar.dev.Board.repositories.ReplyRepository;
@@ -25,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -40,10 +36,11 @@ public class BoardService {
     private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
 
     @Transactional
-    public void saveArticle(@Valid BoardSaveRequestDto requestDto) throws ApiException{
+    public void saveArticle(BoardRequestDto requestDto, boolean isNotice) throws ApiException{
         try {
             Board board = requestDto.toEntity();
             board.setUserPass(board.getUserPass());
+            board.setBoardCategory(isNotice);
             boardRepository.save(board);
         } catch (Exception e){
             throw new ApiException("INVALID_ARTICLE_POST", "게시글 형식이 잘못되었습니다.", new ApiExceptionData().add("board", requestDto));
@@ -51,18 +48,16 @@ public class BoardService {
     }
 
     @Transactional
-    public void saveArticleWithFiles(@Valid BoardSaveRequestDto requestDto) {
-
-        requestDto.setUserPass(passwordEncoder.encode(requestDto.getUserPass()));
-
+    public void saveArticleWithFiles(BoardRequestDto requestDto, boolean isNotice) {
         Board board = requestDto.toEntity();
+        board.setUserPass(requestDto.getUserPass());
 
         if (requestDto.getFiles() != null) {
             List<String> files = requestDto.getFiles();
             List<File> entities = new ArrayList<>();
 
             for (String file : files) {
-                FileSaveRequestDto dto = new FileSaveRequestDto();
+                FileRequestDto dto = new FileRequestDto();
                 dto.setFileName(file);
                 dto.setBoard(board);
                 entities.add(dto.toEntity());
@@ -70,12 +65,18 @@ public class BoardService {
             fileRepository.saveAll(entities);
             boardRepository.save(board);
         }
+        board.setBoardCategory(isNotice);
         boardRepository.save(board);
     }
 
     @Transactional
-    public Page<Board> pagination(PageVO vo, Pageable page){
-        return boardRepository.findAll(boardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
+    public Page<Board> noticePagination(PageVO vo, Pageable page){
+        return boardRepository.findByBoardCategoryNotice(boardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
+    }
+
+    @Transactional
+    public Page<Board> qnaPagination(PageVO vo, Pageable page){
+        return boardRepository.findByBoardCategoryQna(boardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
     }
 
     @Transactional
@@ -101,8 +102,9 @@ public class BoardService {
     @Transactional
     public Map<String, Object> getArticleById(Long id) throws ApiException {
         Optional<Board> optBoard = boardRepository.findById(id);
-        Optional<Board> previousArticle = boardRepository.findFirstByIdIsLessThanOrderByIdAsc(id);
-        Optional<Board> nextArticle = boardRepository.findFirstByIdIsGreaterThanOrderByIdDesc(id);
+        Optional<Board> previousArticle = boardRepository.findFirstByIdIsLessThanOrderByIdDesc(id);
+        Optional<Board> nextArticle = boardRepository.findFirstByIdIsGreaterThanOrderByIdAsc(id);
+
         Map<String , Object> resultMap = new HashMap<>();
         Map<String, String> smallPagination = new HashMap<>();
 
@@ -123,10 +125,10 @@ public class BoardService {
                 return smallPagination;
             });
 
-            resultMap.put("board", article);
-            resultMap.put("previous-article", previousArticle);
-            resultMap.put("next-article", nextArticle);
-
+            resultMap.put("currentArticle", article);
+            resultMap.put("previousArticle", smallPagination.get("previous-article-id"));
+            resultMap.put("nextArticle", smallPagination.get("next-article-id"));
+            article.updateViewHit(1);
             return resultMap;
         }).orElseThrow(ApiException::new);
     }
@@ -143,7 +145,7 @@ public class BoardService {
     }
 
     @Transactional
-    public ResponseEntity<List<Reply>> addReply(Long boardId, ReplySaveRequestDto requestDto){
+    public ResponseEntity<List<Reply>> addReply(Long boardId, ReplyRequestDto requestDto){
         Board board = boardRepository.getOne(boardId);
 
         requestDto.setBoard(board);
@@ -179,10 +181,9 @@ public class BoardService {
         return replyRepository.findAllByBoard_IdOrderByIdAsc(board.getId());
     }
 
+    // 수정해야함
     @Transactional
     public ResponseEntity<List<Reply>> removeReply(Long boardId, Long replyId){
-        logger.info("delete reply : " + replyId);
-
         replyRepository.deleteById(replyId);
 
         Board board = boardRepository.getOne(boardId);
@@ -194,7 +195,7 @@ public class BoardService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateReply(Long boardId, Long replyId, ReplySaveRequestDto updateRequest) throws ApiException {
+    public ResponseEntity<?> updateReply(Long boardId, Long replyId, ReplyRequestDto updateRequest) throws ApiException {
         Board board = boardRepository.getOne(boardId);
 
         try {
@@ -217,7 +218,7 @@ public class BoardService {
         return ResponseEntity.accepted().body(new ApiResponse(true, "글이 정상적으로 삭제되었습니다."));
     }
 
-    public ResponseEntity<?> updateArticle(Long id, BoardSaveRequestDto updateRequest) {
+    public ResponseEntity<?> updateArticle(Long id, BoardRequestDto updateRequest) {
         try {
             boardRepository.findById(id).ifPresent(article -> {
                 article.updateArticle(updateRequest.toEntity());
@@ -242,8 +243,8 @@ public class BoardService {
         } catch (Exception e){
             return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
         }
-
     }
 }
+
 
 

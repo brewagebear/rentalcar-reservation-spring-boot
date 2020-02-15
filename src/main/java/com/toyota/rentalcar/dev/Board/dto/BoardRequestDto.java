@@ -4,6 +4,7 @@ package com.toyota.rentalcar.dev.Board.dto;
 import com.toyota.rentalcar.dev.Board.model.Board;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
@@ -11,19 +12,28 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
-public class BoardSaveRequestDto {
+public class BoardRequestDto {
 
+    @NotNull
     private String userName;
+
+    @NotNull
     private String userPass;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private String title;
+
+    @NotNull
     private String content;
     private List<String> files;
 
     @Builder
-    BoardSaveRequestDto(String userName, String password, String email, String title, String content, List<String> files){
+    BoardRequestDto(String userName, String userPass, String email, String title, String content, List<String> files){
         this.userName = userName;
-        this.userPass = password;
+        this.userPass = userPass;
         this.email    = email;
         this.title    = title;
         this.content  = content;

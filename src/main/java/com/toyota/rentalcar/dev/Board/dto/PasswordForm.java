@@ -4,14 +4,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class passwordForm {
+public class PasswordForm {
 
+    @NotNull
     private String password;
-
-    public passwordForm(String password) {
+    public PasswordForm(String password) {
         this.password = password;
     }
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FileSaveRequestDto {
+public class FileRequestDto {
 
     private Board board;
     private String fileName;

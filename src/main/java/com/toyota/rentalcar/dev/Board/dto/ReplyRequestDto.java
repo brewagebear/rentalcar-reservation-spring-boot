@@ -6,14 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReplySaveRequestDto {
+public class ReplyRequestDto {
 
+    @NotNull
     private String content;
+
+    @NotNull
     private String userName;
+
+    @NotNull
     private String userPass;
+
+    @NotNull
     private Board board;
 
     public Reply toEntity(){

@@ -1,17 +1,18 @@
 package com.toyota.rentalcar.dev.commons.config;
 
-import com.toyota.rentalcar.dev.commons.utils.UsersService;
+import com.toyota.rentalcar.dev.Board.service.CustomUserDetailService;
+import com.toyota.rentalcar.dev.Board.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -24,7 +25,7 @@ import javax.sql.DataSource;
 public class AppWebSecurityConfigure extends WebSecurityConfigurerAdapter {
 
     private final DataSource   dataSource;
-    private final UsersService usersService;
+    private final CustomUserDetailService userDetailService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,16 +36,11 @@ public class AppWebSecurityConfigure extends WebSecurityConfigurerAdapter {
                     .antMatchers("/manager/**").hasRole("MANAGER")
                     .antMatchers("/admin/**").hasRole("ADMIN");
         http
-                .formLogin()
-                .loginPage("/login");
-        http
                 .exceptionHandling().accessDeniedPage("/accessDenied");
-        http
-                .logout().logoutUrl("/logout").invalidateHttpSession(true);
         http
                 .rememberMe()
                 .key("toyota-rentalcar")
-                .userDetailsService(usersService)
+                .userDetailsService(userDetailService)
                 .tokenRepository(getJDBCRepository())
                 .tokenValiditySeconds(60*60*24);
     }
@@ -60,7 +56,13 @@ public class AppWebSecurityConfigure extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return authenticationManager();
+    }
+
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(usersService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
     }
 }

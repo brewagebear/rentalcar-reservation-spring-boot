@@ -3,8 +3,12 @@ package com.toyota.rentalcar.dev.Board.repositories;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.toyota.rentalcar.dev.Board.model.Board;
+import com.toyota.rentalcar.dev.Board.model.BoardCategory;
 import com.toyota.rentalcar.dev.domain.QBoard;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
@@ -37,6 +41,13 @@ public interface BoardRepository extends JpaRepository<Board, Long>, QuerydslPre
         }
         return builder;
     }
-    public Optional<Board> findFirstByIdIsLessThanOrderByIdAsc(Long id);
-    public Optional<Board> findFirstByIdIsGreaterThanOrderByIdDesc(Long id);
+
+    public Optional<Board> findFirstByIdIsGreaterThanOrderByIdAsc(Long id);
+    public Optional<Board> findFirstByIdIsLessThanOrderByIdDesc(Long id);
+
+    @Query("select b from Board b where b.boardCategory = 'NOTICE'")
+    public Page<Board> findByBoardCategoryNotice(Predicate predicate, Pageable pageable);
+
+    @Query("select b from Board b where b.boardCategory = 'QNA'")
+    public Page<Board> findByBoardCategoryQna(Predicate predicate, Pageable pageable);
 }

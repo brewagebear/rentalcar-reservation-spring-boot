@@ -11,13 +11,13 @@ public class BoardResponseDto {
     private String title;
     private String userName;
     private int hit;
-    private LocalDateTime modifiedDate;
+    private LocalDateTime createDate;
 
-    public BoardResponseDto(Long id, String title, String userName, int hit, LocalDateTime modifiedDate){
+    public BoardResponseDto(Long id, String title, String userName, int hit, LocalDateTime createDate){
         this.id           = id;
         this.title        = title;
         this.userName     = userName;
         this.hit          = hit;
-        this.modifiedDate = modifiedDate;
+        this.createDate   = createDate;
     }
 }
