@@ -2,6 +2,7 @@ package com.toyota.rentalcar.dev.Board.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.toyota.rentalcar.dev.commons.model.BaseTimeEntity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "TBL_MEMBER", uniqueConstraints = {@UniqueConstraint(columnNames = "userEmail")})
 public class Member extends BaseTimeEntity implements PasswordProcessing {
 

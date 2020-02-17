@@ -96,12 +96,17 @@ public class Board extends BaseTimeEntity implements PasswordProcessing {
         this.email    = email;
         this.title    = title;
         this.content  = content;
+        this.isNewArticle = true;
     }
 
     @PrePersist
     public void perPersist(){
         if(this.hit == null) this.hit = 0;
-        if(this.boardType == null) this.boardType = BoardType.NON_FIXED_HEADER;
+        if(this.boardType == null) {
+            this.boardType = BoardType.NON_FIXED_HEADER;
+        } else {
+            this.boardType = BoardType.FIXED_HEADER;
+        }
         this.isNewArticle = true;
     }
 

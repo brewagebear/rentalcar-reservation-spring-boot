@@ -4,6 +4,7 @@ package com.toyota.rentalcar.dev.Board.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.toyota.rentalcar.dev.commons.model.BaseTimeEntity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Entity
 @Table(name = "TBL_REPLIES")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reply extends BaseTimeEntity implements PasswordProcessing {
 
     @Id

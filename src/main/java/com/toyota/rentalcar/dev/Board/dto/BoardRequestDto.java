@@ -2,6 +2,7 @@ package com.toyota.rentalcar.dev.Board.dto;
 
 
 import com.toyota.rentalcar.dev.Board.model.Board;
+import com.toyota.rentalcar.dev.Board.model.BoardType;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -28,17 +29,8 @@ public class BoardRequestDto {
 
     @NotNull
     private String content;
+    private BoardType boardType;
     private List<String> files;
-
-    @Builder
-    BoardRequestDto(String userName, String userPass, String email, String title, String content, List<String> files){
-        this.userName = userName;
-        this.userPass = userPass;
-        this.email    = email;
-        this.title    = title;
-        this.content  = content;
-        this.files    = files;
-    }
 
     public Board toEntity(){
         return Board.builder()
@@ -47,6 +39,7 @@ public class BoardRequestDto {
                 .email(email)
                 .title(title)
                 .content(content)
+                .boardType(boardType)
                 .build();
     }
 }

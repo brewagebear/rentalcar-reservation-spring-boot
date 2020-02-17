@@ -23,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -49,6 +51,24 @@ public class BoardController {
             return boardService.saveArticleWithFiles(requestDto, true);
         }
         return boardService.saveArticle(requestDto, true);
+    }
+
+    @ApiOperation(value = "QNA 상단 고정글 목록 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "board_type", value = "게시글 타입 (상단고정인지 아닌지)", required = true, dataType = "string")
+    })
+    @GetMapping("/qna/fixed-header")
+    public ResponseEntity<?> getFixedHeaderQnaArticle() throws ApiException {
+        return ResponseEntity.ok().body(boardService.getFixedHeaderQnaArticle());
+    }
+
+    @ApiOperation(value = "공지사항 상단 고정글 목록 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "board_type", value = "게시글 타입 (상단고정인지 아닌지)", required = true, dataType = "string")
+    })
+    @GetMapping("/notice/fixed-header")
+    public ResponseEntity<?> getFixedHeaderNoticeArticle() throws ApiException {
+        return ResponseEntity.ok().body(boardService.getFixedHeaderNoticeArticle());
     }
 
     @ApiOperation(value = "게시글 타입 수정 API")

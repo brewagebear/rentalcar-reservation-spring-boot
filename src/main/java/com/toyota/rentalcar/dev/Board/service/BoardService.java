@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,7 +28,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class BoardService {
-
     private final BoardRepository boardRepository;
     private final ReplyRepository replyRepository;
     private final FileRepository  fileRepository;
@@ -72,7 +72,6 @@ public class BoardService {
                 entities.add(dto.toEntity());
             }
             fileRepository.saveAll(entities);
-            boardRepository.save(board);
         }
         board.setBoardCategory(isNotice);
         boardRepository.save(board);
@@ -80,13 +79,43 @@ public class BoardService {
     }
 
     @Transactional
-    public Page<Board> noticePagination(PageVO vo, Pageable page){
-        return boardRepository.findByBoardCategoryNotice(boardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
+    public List<Board> getFixedHeaderQnaArticle() {
+        return boardRepository.findByBoardCategoryAndBoardType(BoardCategory.QNA, BoardType.FIXED_HEADER);
     }
 
     @Transactional
+    public List<Board> getFixedHeaderNoticeArticle() {
+        return boardRepository.findByBoardCategoryAndBoardType(BoardCategory.NOTICE, BoardType.FIXED_HEADER);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Board> noticePagination(PageVO vo, Pageable page){
+        Map<String, Object> filter = new HashMap<>();
+            if(vo.getType() != null && vo.getKeyword() != null) {
+                filter.put(vo.getType(), vo.getKeyword());
+                return boardRepository.findAll(
+                        Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.NOTICE))
+                                .and(BoardSpecification.getPredicateWithKeyword(filter))
+                        , page);
+            } else {
+            return boardRepository.findAll(
+                    Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.NOTICE)), page);
+        }
+    }
+
+    @Transactional(readOnly = true)
     public Page<Board> qnaPagination(PageVO vo, Pageable page){
-        return boardRepository.findByBoardCategoryQna(boardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
+        Map<String, Object> filter = new HashMap<>();
+        if(vo.getType() != null && vo.getKeyword() != null) {
+            filter.put(vo.getType(), vo.getKeyword());
+            return boardRepository.findAll(
+                    Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.QNA))
+                            .and(BoardSpecification.getPredicateWithKeyword(filter))
+                    , page);
+        } else {
+            return boardRepository.findAll(
+                    Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.QNA)), page);
+        }
     }
 
     @Transactional
@@ -254,6 +283,7 @@ public class BoardService {
 
         return new ResponseEntity<>(getListByBoard(board), HttpStatus.OK);
     }
+
 }
 
 
