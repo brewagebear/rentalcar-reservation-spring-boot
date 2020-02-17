@@ -80,12 +80,16 @@ public class BoardService {
 
     @Transactional
     public List<Board> getFixedHeaderQnaArticle() {
-        return boardRepository.findByBoardCategoryAndBoardType(BoardCategory.QNA, BoardType.FIXED_HEADER);
+        return boardRepository.findAll(
+                Specification.where(BoardSpecification.getArticleByCategoryAndHeader(BoardCategory.QNA, BoardType.FIXED_HEADER))
+        );
     }
 
     @Transactional
     public List<Board> getFixedHeaderNoticeArticle() {
-        return boardRepository.findByBoardCategoryAndBoardType(BoardCategory.NOTICE, BoardType.FIXED_HEADER);
+        return boardRepository.findAll(
+                Specification.where(BoardSpecification.getArticleByCategoryAndHeader(BoardCategory.NOTICE, BoardType.FIXED_HEADER))
+        );
     }
 
     @Transactional(readOnly = true)
@@ -94,12 +98,12 @@ public class BoardService {
             if(vo.getType() != null && vo.getKeyword() != null) {
                 filter.put(vo.getType(), vo.getKeyword());
                 return boardRepository.findAll(
-                        Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.NOTICE))
+                        Specification.where(BoardSpecification.getArticleByCategoryAndHeader(BoardCategory.NOTICE, BoardType.NON_FIXED_HEADER))
                                 .and(BoardSpecification.getPredicateWithKeyword(filter))
                         , page);
             } else {
             return boardRepository.findAll(
-                    Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.NOTICE)), page);
+                    Specification.where(BoardSpecification.getArticleByCategoryAndHeader(BoardCategory.NOTICE, BoardType.NON_FIXED_HEADER)), page);
         }
     }
 
@@ -109,12 +113,12 @@ public class BoardService {
         if(vo.getType() != null && vo.getKeyword() != null) {
             filter.put(vo.getType(), vo.getKeyword());
             return boardRepository.findAll(
-                    Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.QNA))
+                    Specification.where(BoardSpecification.getArticleByCategoryAndHeader(BoardCategory.QNA, BoardType.NON_FIXED_HEADER))
                             .and(BoardSpecification.getPredicateWithKeyword(filter))
                     , page);
         } else {
             return boardRepository.findAll(
-                    Specification.where(BoardSpecification.getArticleByCategory(BoardCategory.QNA)), page);
+                    Specification.where(BoardSpecification.getArticleByCategoryAndHeader(BoardCategory.QNA, BoardType.NON_FIXED_HEADER)), page);
         }
     }
 

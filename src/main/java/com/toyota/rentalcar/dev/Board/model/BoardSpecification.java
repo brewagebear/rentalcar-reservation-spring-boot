@@ -26,9 +26,15 @@ public class BoardSpecification {
         }
     }
 
-    public static Specification<Board> getArticleByCategory(final BoardCategory category){
+    public static Specification<Board> getArticleByCategoryAndHeader(final BoardCategory category, final BoardType type){
         return ((root, query, criteriaBuilder) -> {
-           return criteriaBuilder.equal(root.<Board>get("boardCategory"), category);
+           List<Predicate> predicates = new ArrayList<>();
+
+           Predicate predicateForCategory = criteriaBuilder.equal(root.<Board>get("boardCategory"), category);
+           Predicate predicateForHeader = criteriaBuilder.equal(root.<Board>get("boardType"), type);
+           predicates.add(criteriaBuilder.and(predicateForCategory, predicateForHeader));
+
+           return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });
     }
 
