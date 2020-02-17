@@ -31,6 +31,6 @@ public class CustomUserDetailService implements UserDetailsService {
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         grantedAuthorities.add(new SimpleGrantedAuthority(member.get().getRole().name()));
 
-        return new User(member.get().getUserName(), member.get().getUserPass(), grantedAuthorities);
+        return new User(member.get().getUserEmail(), member.get().getUserPass(), grantedAuthorities);
     }
 }
