@@ -6,6 +6,7 @@ import com.toyota.rentalcar.dev.Board.service.MemberService;
 import com.toyota.rentalcar.dev.Board.service.SecurityService;
 import com.toyota.rentalcar.dev.RentalCar.dto.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -4,6 +4,9 @@ import com.toyota.rentalcar.dev.RentalCar.model.RentalCar;
 import com.toyota.rentalcar.dev.RentalCar.dto.InvalidDateSaveRequestDto;
 import com.toyota.rentalcar.dev.RentalCar.services.DateService;
 import com.toyota.rentalcar.dev.RentalCar.services.RentalCarService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +25,11 @@ public class DateController {
     private final DateService dateService;
     private final RentalCarService carService;
 
-    // 클린코드 예정
+    @ApiOperation(value = "예약 가능한 날짜 조회 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "start_date", value = "예약 조회 시작날짜", required = true, dataType = "date"),
+            @ApiImplicitParam(name = "end_date", value = "예약 조회 끝날짜", required = true, dataType = "date")
+    })
     @GetMapping(value = "/available-date")
     public Map<String, Object> getAvailableDate(
             @RequestParam(value = "startDate", defaultValue = "1800-01-01", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Calendar startDate,
@@ -34,12 +41,17 @@ public class DateController {
         return map;
     }
 
-    @PostMapping(value = "/invalid-date/{id}")
-    public Long saveInvalidDate(@PathVariable Long id,
+    @ApiOperation(value = "예약 불가능한 날짜 등록 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "start_date", value = "예약 불가능 시작날짜", required = true, dataType = "date"),
+            @ApiImplicitParam(name = "end_date", value = "예약 불가능 끝날짜", required = true, dataType = "date")
+    })
+    @PostMapping(value = "/invalid-date/{car_id}")
+    public Long saveInvalidDate(@PathVariable("car_id")Long carId,
                      @RequestParam(value = "start_date") @DateTimeFormat(pattern = "yyyy-MM-dd") Calendar startDate,
                      @RequestParam(value = "end_date") @DateTimeFormat(pattern = "yyyy-MM-dd") Calendar endDate){
 
-        RentalCar car = carService.findOne(id);
+        RentalCar car = carService.findOne(carId);
         InvalidDateSaveRequestDto target = new InvalidDateSaveRequestDto();
 
         target.setCar(car);

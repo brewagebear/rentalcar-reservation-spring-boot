@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 		FileStorageProperties.class
 })
 public class DevApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(DevApplication.class, args);
 	}

@@ -2,8 +2,8 @@ package com.toyota.rentalcar.dev.Board.controller;
 
 
 import com.toyota.rentalcar.dev.Board.dto.BoardRequestDto;
-import com.toyota.rentalcar.dev.Board.dto.ReplyRequestDto;
 import com.toyota.rentalcar.dev.Board.dto.PasswordForm;
+import com.toyota.rentalcar.dev.Board.dto.ReplyRequestDto;
 import com.toyota.rentalcar.dev.Board.model.Board;
 import com.toyota.rentalcar.dev.Board.model.BoardType;
 import com.toyota.rentalcar.dev.Board.service.BoardService;
@@ -23,8 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 @CrossOrigin
 @RestController
